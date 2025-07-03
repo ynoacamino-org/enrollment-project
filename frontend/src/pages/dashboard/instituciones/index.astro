@@ -5,7 +5,6 @@ import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
 import InstitutionListServer from '@/modules/dashboard/instituciones/core/components/InstitutionListServer.astro';
 import InstitutionListSkeleton from '@/modules/dashboard/instituciones/core/components/InstitutionListSkeleton.astro';
 
-// Primero se verifica la autenticación
 const { data: user, error } = await authService.getUser(Astro.cookies);
 
 if (error) {

@@ -1,8 +1,8 @@
 ---
 import type { AuthRequired, User } from '@/modules/auth/core/types/user';
 import RootLayout from '@/modules/core/layouts/RootLayout.astro';
-import AdminEnrollmentLateralBar from '@/modules/dashboard/instituciones/matriculas/core/layouts/AdminEnrollmentLateralBar.astro';
 import { getRouteFromPath } from '@/modules/core/lib/routes';
+import EnrollmentDashboardLateralBar from './EnrollmentDashboardLateralBar.astro';
 
 // Por ahora solo se requerira un usuario autenticado, ya que el usuario en la base de datos no tiene un rol como campo
 // Puede comportarse como un administrador o un usuario normal, dependiendo de la institucion a la que pertenezca
@@ -14,7 +14,7 @@ const route = getRouteFromPath(Astro.url.pathname);
 
 ---
 <RootLayout route={route} class="flex flex-row min-h-screen">
-  <AdminEnrollmentLateralBar user={user} currentRoute={route}/>
+  <EnrollmentDashboardLateralBar user={user} currentRoute={route}/>
   <main class="flex flex-col flex-1 overflow-y-auto">
     <slot />
   </main>
