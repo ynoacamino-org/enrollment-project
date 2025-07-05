@@ -1,3 +1,4 @@
+import { capitalize } from '@/modules/core/lib/utils';
 import {
   Card,
   CardAction,
@@ -41,17 +42,17 @@ export function EnrollmentProcessList({
                 institucion_id: institution.id,
                 matricula_id: process.id,
               })}
-              className="items-center w-full"
+              className="items-center w-full flex justify-center flex-col py-2 h-auto text-base gap-1"
               variant="ghost"
               size="lg"
             >
-              {process.startAt && process.endAt ? (
-                <span className="text-sm text-gray-500">
-                  {new Date(process.startAt).toLocaleDateString()} -{' '}
-                  {new Date(process.endAt).toLocaleDateString()}
+              {capitalize(process.name)}
+              {process.startDay && process.endDay ? (
+                <span className="text-xs text-gray-500">
+                  {new Date(process.startDay).toLocaleDateString()} -{' '}
+                  {new Date(process.endDay).toLocaleDateString()}
                 </span>
               ) : null}
-              {process.name}
             </Link>
           ))
         ) : (

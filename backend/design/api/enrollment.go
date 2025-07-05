@@ -116,7 +116,7 @@ var _ = Service("enrollment", func() {
 		Result(ListAllCoursesAvailableByStudentInProcessResult)
 
 		HTTP(func() {
-			GET("/processes/{processId}/courses")
+			GET("/processes/{processId}")
 			Param("processId", Int32, "ID of the process")
 			Response(StatusOK)
 			Response("not_authorized", StatusForbidden)
@@ -138,7 +138,7 @@ var _ = Service("enrollment", func() {
 		Result(ArrayOf(types.SectionWithEvents))
 
 		HTTP(func() {
-			GET("/courses/{courseId}")
+			GET("/courses/{courseId}/sections")
 			Param("courseId", Int32, "ID of the course")
 			Response(StatusOK)
 			Response("not_authorized", StatusForbidden)
