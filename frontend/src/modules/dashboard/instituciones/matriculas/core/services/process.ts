@@ -7,49 +7,49 @@ class EnrollmentProcessService {
   private enrrolmentApiUrl: string;
 
   constructor() {
-    this.enrrolmentApiUrl = `${BACKEND_URL}/enrollments`;
+    this.enrrolmentApiUrl = `${BACKEND_URL}`;
   }
 
-  async getAllEnrollmentProcesses(
-    institutionId: string,
-  ): ApiResponse<EnrollmentProcess[]> {
-    try {
-      const response = await fetch(
-        `${this.enrrolmentApiUrl}/processes/${institutionId}`,
-        {
-          method: 'GET',
-        },
-      );
+  // async getAllEnrollmentProcesses(
+  //   institutionId: string,
+  // ): ApiResponse<EnrollmentProcess[]> {
+  //   try {
+  //     const response = await fetch(
+  //       `${this.enrrolmentApiUrl}/processes/${institutionId}`,
+  //       {
+  //         method: 'GET',
+  //       },
+  //     );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        return {
-          data: undefined,
-          error: {
-            status: response.status,
-            message:
-              errorData.message || 'Failed to fetch enrollment processes',
-          },
-        };
-      }
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       return {
+  //         data: undefined,
+  //         error: {
+  //           status: response.status,
+  //           message:
+  //             errorData.message || 'Failed to fetch enrollment processes',
+  //         },
+  //       };
+  //     }
 
-      const data = await response.json();
-      return { data, error: undefined };
-    } catch (error) {
-      console.error('[getAllEnrollmentProcesses] Error:', error);
-      return {
-        data: undefined,
-        error: INTERNAL_SERVER_ERROR,
-      };
-    }
-  }
+  //     const data = await response.json();
+  //     return { data, error: undefined };
+  //   } catch (error) {
+  //     console.error('[getAllEnrollmentProcesses] Error:', error);
+  //     return {
+  //       data: undefined,
+  //       error: INTERNAL_SERVER_ERROR,
+  //     };
+  //   }
+  // }
 
   async getEnrollmentProcessById(
     processId: string,
   ): ApiResponse<EnrollmentProcess> {
     try {
       const response = await fetch(
-        `${this.enrrolmentApiUrl}/processes/${processId}`,
+        `${this.enrrolmentApiUrl}/processes/${processId}/courses`,
         {
           method: 'GET',
         },
