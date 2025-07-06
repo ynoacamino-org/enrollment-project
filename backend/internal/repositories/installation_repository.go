@@ -3,15 +3,15 @@ package repositories
 import (
 	"github.com/enrollment/gen/db"
 	"github.com/enrollment/internal/ports"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type InstallationRepository struct {
 	*db.Queries
 }
 
-func NewInstallationRepository(conn *pgx.Conn) ports.InstallationRepositoryInterface {
+func NewInstallationRepository(pool *pgxpool.Pool) ports.InstallationRepositoryInterface {
 	return &InstallationRepository{
-		Queries: db.New(conn),
+		Queries: db.New(pool),
 	}
 }

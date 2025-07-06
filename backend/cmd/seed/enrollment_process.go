@@ -98,7 +98,7 @@ func seedEnrollmentProcessTables(
 ) {
 	// faker := faker.New()
 
-	log.Println("Seeding courses...")
+	log.Println("Seeding sections...")
 	courses, err := courseRepo.ListCourses(ctx)
 	if err != nil {
 		log.Fatalf("Failed to list courses: %v", err)
@@ -194,6 +194,53 @@ func seedEnrollmentProcessTables(
 			err := studentProcessRepo.CreateStudentProcess(ctx, studentProcess)
 			if err != nil {
 				log.Printf("Failed to create student-process relation for student %d and process %d: %v", student.ID, process.ID, err)
+			}
+		}
+	}
+
+	log.Println("Seeding Student Available Courses...")
+	studentsAsync = <-utils.Async(func() ([]db.FullListStudentsRow, error) {
+		return studentRepo.FullListStudents(ctx)
+	})
+	if studentsAsync.Err != nil {
+		log.Fatalf("Failed to list students: %v", studentsAsync.Err)
+	}
+	students = studentsAsync.Value
+	for _, student := range students {
+		processesAsync := <-utils.Async(func() ([]db.Process, error) {
+			return processRepo.ListProcessByStudentId(ctx, student.ID)
+		})
+		if processesAsync.Err != nil {
+			log.Fatalf("Failed to list processes: %v", processesAsync.Err)
+		}
+		processes := processesAsync.Value
+
+		for _, process := range processes {
+			coursesAsync := <-utils.Async(func() ([]db.Course, error) {
+				return courseRepo.ListAllCoursesByProcessId(ctx, process.ID)
+			})
+			if coursesAsync.Err != nil {
+				log.Fatalf("Failed to list courses for process %d: %v", process.ID, coursesAsync.Err)
+			}
+			courses := coursesAsync.Value
+
+			if len(courses) == 0 {
+				log.Printf("No courses available for student %d in process %d", student.ID, process.ID)
+				continue
+			}
+
+			countOfCourses := rand.Intn(len(courses)) + 1
+
+			for range countOfCourses {
+				randomCourse := courses[rand.Intn(len(courses))]
+
+				err := courseRepo.CreateStudentAvailableCourse(ctx, db.CreateStudentAvailableCourseParams{
+					StudentID: student.ID,
+					CourseID:  randomCourse.ID,
+				})
+				if err != nil {
+					log.Printf("Failed to create student available course for student %d and course %d: %v", student.ID, randomCourse.ID, err)
+				}
 			}
 		}
 	}

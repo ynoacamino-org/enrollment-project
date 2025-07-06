@@ -2,13 +2,34 @@
 import { authService } from '@/modules/auth/core/services/auth';
 import EnrollmentDashboardLayout from '@/modules/dashboard/instituciones/matriculas/core/layouts/EnrollmentDashboardLayout.astro';
 import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
+import AdminEnrollmentLayout from '@/modules/dashboard/instituciones/matriculas/core/layouts/AdminEnrollmentLayout.astro';
+import { processService } from '@/modules/dashboard/instituciones/matriculas/core/services/process.server';
+import { capitalize } from '@/modules/core/lib/utils';
+import CoursesList from '@/modules/dashboard/instituciones/matriculas/core/components/CoursesList';
 
 const { data: user, error } = await authService.getUser(Astro.cookies);
-
-if (error) {
+if (!user || error) {
   return Astro.redirect(LANDING_ROUTE.fullPath);
 }
+
+const { matricula_id } = Astro.params;
+if (!matricula_id) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+
+const {data: process, error: processError} = await processService.getProcessById(matricula_id, Astro.cookies);
+if (processError || !process) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+
+
 ---
 <EnrollmentDashboardLayout user={user}>
   <h1>Home</h1>
 </EnrollmentDashboardLayout>
+<AdminEnrollmentLayout user={user} process={process}>
+  <h1 class="text-3xl font-semibold mb-4">
+    Matrículas {capitalize(process.name) || 'desconocida'}
+  </h1>
+  <CoursesList client:load courses={process.courses}/>
+</AdminEnrollmentLayout>

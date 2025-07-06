@@ -12,4 +12,5 @@ type SectionRepositoryInterface interface {
 	ListPopulateSections(ctx context.Context) ([]db.ListPopulateSectionsRow, error)
 	UpdateSection(ctx context.Context, arg db.UpdateSectionParams) error
 	DeleteSection(ctx context.Context, id int32) error
+	ListDetailedSectionByCourseId(ctx context.Context, arg db.ListDetailedSectionByCourseIdParams) ([]db.ListDetailedSectionByCourseIdRow, error)
 }

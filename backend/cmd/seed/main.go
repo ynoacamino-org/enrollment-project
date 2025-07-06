@@ -12,26 +12,26 @@ func main() {
 		panic(err)
 	}
 
-	conn, err := db.ConnectDB(cfg)
+	pool, err := db.ConnectDB(cfg)
 	if err != nil {
 		panic(err)
 	}
 
 	var (
-		oauthRepo          = repositories.NewOauthRepository(conn)
-		studentGroupRepo   = repositories.NewStudentGroupRepository(conn)
-		installationRepo   = repositories.NewInstallationRepository(conn)
-		courseRepo         = repositories.NewCourseRepository(conn)
-		processRepo        = repositories.NewProcessRepository(conn)
-		modalityRepo       = repositories.NewModalityRepository(conn)
-		studentRepo        = repositories.NewStudentRepository(conn)
-		speakerRepo        = repositories.NewSpeakerRepository(conn)
-		studentProcessRepo = repositories.NewStudentProcessRepository(conn)
-		sectionSpeakerRepo = repositories.NewSectionSpeakerRepository(conn)
-		sectionRepo        = repositories.NewSectionRepository(conn)
-		slotsRepo          = repositories.NewSlotsRepository(conn)
-		eventRepo          = repositories.NewEventRepository(conn)
-		insstitutionRepo   = repositories.NewInstitutionRepository(conn)
+		oauthRepo          = repositories.NewOauthRepository(pool)
+		studentGroupRepo   = repositories.NewStudentGroupRepository(pool)
+		installationRepo   = repositories.NewInstallationRepository(pool)
+		courseRepo         = repositories.NewCourseRepository(pool)
+		processRepo        = repositories.NewProcessRepository(pool)
+		modalityRepo       = repositories.NewModalityRepository(pool)
+		studentRepo        = repositories.NewStudentRepository(pool)
+		speakerRepo        = repositories.NewSpeakerRepository(pool)
+		studentProcessRepo = repositories.NewStudentProcessRepository(pool)
+		sectionSpeakerRepo = repositories.NewSectionSpeakerRepository(pool)
+		sectionRepo        = repositories.NewSectionRepository(pool)
+		slotsRepo          = repositories.NewSlotsRepository(pool)
+		eventRepo          = repositories.NewEventRepository(pool)
+		insstitutionRepo   = repositories.NewInstitutionRepository(pool)
 	)
 
 	seedOauthTables(

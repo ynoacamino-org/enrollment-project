@@ -1,8 +1,7 @@
-CREATE TABLE institution (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(128) UNIQUE NOT NULL,
-    logo_url VARCHAR(255)
-);
+-- name: GetInstitutionByID :one
+SELECT *
+FROM institution
+WHERE id = $1;
 
 -- name: CreateInstitution :exec
 INSERT INTO institution (name, logo_url) VALUES ($1, $2);

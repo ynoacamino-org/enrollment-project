@@ -3,12 +3,15 @@ import type { AuthRequired, User } from '@/modules/auth/core/types/user';
 import RootLayout from '@/modules/core/layouts/RootLayout.astro';
 import { getRouteFromPath } from '@/modules/core/lib/routes';
 import EnrollmentDashboardLateralBar from './EnrollmentDashboardLateralBar.astro';
+import type { EnrollmentProcess } from '../types/process';
 
 // Por ahora solo se requerira un usuario autenticado, ya que el usuario en la base de datos no tiene un rol como campo
 // Puede comportarse como un administrador o un usuario normal, dependiendo de la institucion a la que pertenezca
-type Props = AuthRequired<User>;
+type Props = AuthRequired<User> & {
+  process: EnrollmentProcess;
+};
 
-const { user } = Astro.props;
+const { user, process } = Astro.props;
 
 const route = getRouteFromPath(Astro.url.pathname);
 

@@ -26,7 +26,7 @@ const (
 
 var MODALITIES [3]string = [3]string{VIRTUAL_MODALITY, PRESENTIAL_MODALITY, HYBRID_MODALITY}
 
-func createRandomStudent(faker faker.Faker, account db.Account, studentGroup db.StudentGroup) (db.CreateStudentParams, error) {
+func createRandomStudent(faker faker.Faker, account db.Account) (db.CreateStudentParams, error) {
 	return db.CreateStudentParams{
 		AccountID: account.ID,
 		Code:      faker.Person().SSN(),
@@ -167,7 +167,7 @@ func seedEnrollmentCoreTables(
 	if err != nil {
 		log.Fatalf("Failed to list processes: %v", err)
 	}
-	for range 100 {
+	for range 400 {
 		process := processes[rand.Intn(len(processes))]
 		course := createRandomCourse(faker, process)
 		err := courseRepo.CreateCourse(ctx, course)
@@ -192,13 +192,8 @@ func seedEnrollmentCoreTables(
 	if err != nil {
 		log.Fatalf("Failed to list accounts: %v", err)
 	}
-	studentGroups, err := studentGroupRepo.ListStudentGroups(ctx)
-	if err != nil {
-		log.Fatalf("Failed to list student groups: %v", err)
-	}
-	for i, account := range accounts {
-		studentGroup := studentGroups[i%len(studentGroups)]
-		student, err := createRandomStudent(faker, account, studentGroup)
+	for _, account := range accounts {
+		student, err := createRandomStudent(faker, account)
 		if err != nil {
 			log.Fatalf("Failed to create student: %v", err)
 		}

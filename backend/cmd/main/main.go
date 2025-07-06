@@ -11,7 +11,7 @@ import (
 	"github.com/enrollment/config"
 	// course "github.com/enrollment/gen/course"
 	// enrollment "github.com/enrollment/gen/enrollment"
-	"github.com/enrollment/gen/institution"
+	"github.com/enrollment/gen/enrollment"
 	"github.com/enrollment/gen/oauth"
 	user "github.com/enrollment/gen/user"
 	controllers "github.com/enrollment/internal/controllers"
@@ -28,42 +28,43 @@ func main() {
 		panic(err)
 	}
 
-	conn, err := db.ConnectDB(cfg)
+	pool, err := db.ConnectDB(cfg)
 	if err != nil {
 		panic(err)
 	}
 
 	// Initialize repositories
 	var (
-		oauthRepo       = repositories.NewOauthRepository(conn)
-		institutionRepo = repositories.NewInstitutionRepository(conn)
-		processRepo     = repositories.NewProcessRepository(conn)
-		studentRepo     = repositories.NewStudentRepository(conn)
-		courseRepo      = repositories.NewCourseRepository(conn)
+		oauthRepo       = repositories.NewOauthRepository(pool)
+		institutionRepo = repositories.NewInstitutionRepository(pool)
+		processRepo     = repositories.NewProcessRepository(pool)
+		studentRepo     = repositories.NewStudentRepository(pool)
+		courseRepo      = repositories.NewCourseRepository(pool)
+		sectionRepo     = repositories.NewSectionRepository(pool)
 	)
 
 	//Initialize services
 	var (
-		institutionSvc institution.Service
+		institutionSvc enrollment.Service
 		oauthSvc       oauth.Service
 		// queueSvc      queue.Service
 		userSvc user.Service
 	)
 	{
-		institutionSvc = controllers.NewInstitution(oauthRepo, institutionRepo, processRepo, studentRepo, courseRepo)
+		institutionSvc = controllers.NewInstitution(oauthRepo, institutionRepo, processRepo, studentRepo, courseRepo, sectionRepo)
 		oauthSvc = controllers.NewOauth(cfg, oauthRepo)
 		// queueSvc = controllers.NewQueue()
 		// userSvc = controllers.NewUser(cfg, adminRepo, studentMajorRepo, speakerRepo)
 	}
 
 	var (
-		institutionEndpoints *institution.Endpoints
+		institutionEndpoints *enrollment.Endpoints
 		oauthEndpoints       *oauth.Endpoints
 		// queueEndpoints      *queue.Endpoints
 		userEndpoints *user.Endpoints
 	)
 	{
-		institutionEndpoints = institution.NewEndpoints(institutionSvc)
+		institutionEndpoints = enrollment.NewEndpoints(institutionSvc)
 		institutionEndpoints.Use(debug.LogPayloads())
 		institutionEndpoints.Use(log.Endpoint)
 

@@ -23,6 +23,13 @@ SELECT
 FROM course
 ORDER BY cycle_number, name;
 
+-- name: ListAllCoursesByProcessId :many
+SELECT
+    c.*
+FROM course c
+WHERE c.process_id = $1
+ORDER BY c.cycle_number, c.name;
+
 -- name: ListAllCoursesAvailableByStudentInProcess :many
 SELECT
     c.id AS course_id,
@@ -30,5 +37,10 @@ SELECT
     c.credits,
     c.cycle_number
 FROM course c
-JOIN student_avalible_courses sac ON sac.course_id = c.id
+JOIN student_available_courses sac ON sac.course_id = c.id
 WHERE sac.student_id = $1 AND c.process_id = $2;
+
+
+-- name: CreateStudentAvailableCourse :exec
+INSERT INTO student_available_courses (student_id, course_id)
+VALUES ($1, $2);

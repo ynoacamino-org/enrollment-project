@@ -2,21 +2,36 @@ package db
 
 import (
 	"context"
+	"fmt"
+	"os"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type ConnectDBConfig interface {
 	GetConnectDBConfig() (string, context.Context)
 }
 
-func ConnectDB(cfg ConnectDBConfig) (*pgx.Conn, error) {
+func ConnectDB(cfg ConnectDBConfig) (*pgxpool.Pool, error) {
 	databaseURL, ctx := cfg.GetConnectDBConfig()
 
-	conn, err := pgx.Connect(ctx, databaseURL)
+	poolConfig, err := pgxpool.ParseConfig(databaseURL)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to parse database URL: %w", err)
 	}
 
-	return conn, nil
+	if os.Getenv("APP_ENV") == "production" {
+		poolConfig.MaxConns = 500
+		poolConfig.MinConns = 50
+	} else {
+		poolConfig.MaxConns = 20
+		poolConfig.MinConns = 5
+	}
+
+	pool, err := pgxpool.NewWithConfig(ctx, poolConfig)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create connection pool: %w", err)
+	}
+
+	return pool, nil
 }

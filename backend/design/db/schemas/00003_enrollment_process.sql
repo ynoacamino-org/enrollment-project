@@ -45,7 +45,7 @@ CREATE TABLE student_process (
     FOREIGN KEY (student_id) REFERENCES student (id) ON DELETE CASCADE
 );
 
-CREATE TABLE student_avalible_courses (
+CREATE TABLE student_available_courses (
     student_id INTEGER,
     course_id INTEGER,
     PRIMARY KEY (student_id, course_id),
@@ -80,7 +80,7 @@ DROP TABLE IF EXISTS course_prerequisite;
 
 DROP TABLE IF EXISTS student_course;
 
-DROP TABLE IF EXISTS student_avalible_courses;
+DROP TABLE IF EXISTS student_available_courses;
 
 DROP TABLE IF EXISTS student_process;
 

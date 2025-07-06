@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
-	institutionsvr "github.com/enrollment/gen/http/institution/server"
+	"github.com/enrollment/gen/enrollment"
+	enrollmentsrv "github.com/enrollment/gen/http/enrollment/server"
 	oauthsvr "github.com/enrollment/gen/http/oauth/server"
-	"github.com/enrollment/gen/institution"
 	"github.com/enrollment/internal/utils"
 
 	//"github.com/enrollment/internal/utils"
@@ -25,7 +25,7 @@ import (
 func handleHTTPServer(
 	ctx context.Context,
 	port string,
-	institutionEndpoints *institution.Endpoints,
+	institutionEndpoints *enrollment.Endpoints,
 	oauthEndpoints *oauth.Endpoints,
 	// _ *queue.Endpoints,
 	wg *sync.WaitGroup,
@@ -47,18 +47,18 @@ func handleHTTPServer(
 	}
 
 	var (
-		institutionServer *institutionsvr.Server
-		oauthServer       *oauthsvr.Server
+		enrollmentServer *enrollmentsrv.Server
+		oauthServer      *oauthsvr.Server
 		// queueServer      *queuesvr.Server
 	)
 	{
 		eh := errorHandler(ctx)
-		institutionServer = institutionsvr.New(institutionEndpoints, mux, dec, enc, eh, nil)
+		enrollmentServer = enrollmentsrv.New(institutionEndpoints, mux, dec, enc, eh, nil)
 		oauthServer = oauthsvr.New(oauthEndpoints, mux, dec, enc, eh, nil)
 		// queueServer = queuesvr.New(queueEndpoints, mux, dec, enc, eh, nil)
 	}
 
-	institutionsvr.Mount(mux, institutionServer)
+	enrollmentsrv.Mount(mux, enrollmentServer)
 	oauthsvr.Mount(mux, oauthServer)
 
 	var handler http.Handler = mux
@@ -70,7 +70,7 @@ func handleHTTPServer(
 
 	srv := &http.Server{Addr: ":" + port, Handler: handler, ReadHeaderTimeout: time.Second * 60}
 
-	for _, m := range institutionServer.Mounts {
+	for _, m := range enrollmentServer.Mounts {
 		log.Printf(ctx, "HTTP %q mounted on %s %s", m.Method, m.Verb, m.Pattern)
 	}
 	for _, m := range oauthServer.Mounts {

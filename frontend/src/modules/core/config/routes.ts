@@ -1,5 +1,6 @@
 import {
   CalendarClockIcon,
+  FileSpreadsheet,
   GraduationCapIcon,
   House,
   LibraryBigIcon,
@@ -99,6 +100,7 @@ export const routesConfig: Route = {
                           path: 'constancia',
                           fullPath:
                             '/dashboard/instituciones/:institucion_id/matriculas/:matricula_id/constancia',
+                          icon: FileSpreadsheet,
                         },
                         {
                           name: 'dashboard-instituciones-one-matriculas-one-horarios',
