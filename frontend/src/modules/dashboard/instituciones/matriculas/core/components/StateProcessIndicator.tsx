@@ -2,7 +2,11 @@ import { Badge } from '@/modules/core/ui/badge';
 import { parseTime } from '@/modules/dashboard/core/lib/utils';
 import { useEffect, useState } from 'react';
 
-export default function Timer({ endDate }: { endDate: number }) {
+export default function StateProcessIndicator({
+  endDate,
+}: {
+  endDate: number;
+}) {
   const [{ remaining, isEnded }, setTime] = useState({
     remaining: '00:00:00',
     isEnded: false,
@@ -12,8 +16,10 @@ export default function Timer({ endDate }: { endDate: number }) {
     const now = Date.now();
     const diff = endDate - now;
 
-    if (diff <= 0)
-      return () => setTime({ remaining: '00:00:00', isEnded: true });
+    if (diff <= 0) {
+      setTime({ remaining: '00:00:00', isEnded: true });
+      return () => {};
+    }
 
     const updateTimer = () => {
       const now = Date.now();

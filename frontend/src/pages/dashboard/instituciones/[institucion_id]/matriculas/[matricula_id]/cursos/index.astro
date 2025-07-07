@@ -2,6 +2,7 @@
 import { authService } from '@/modules/auth/core/services/auth';
 import Button from '@/modules/core/ui/button.astro';
 import EnrollmentDashboardLayout from '@/modules/dashboard/instituciones/matriculas/core/layouts/EnrollmentDashboardLayout.astro';
+import { processService } from '@/modules/dashboard/instituciones/matriculas/core/services/process.server';
 import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
 
 const { data: user, error } = await authService.getUser(Astro.cookies);
@@ -9,7 +10,16 @@ const { data: user, error } = await authService.getUser(Astro.cookies);
 if (error) {
   return Astro.redirect(LANDING_ROUTE.fullPath);
 }
+const { matricula_id } = Astro.params;
+if (!matricula_id) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+
+const {data: process, error: processError} = await processService.getProcessById(matricula_id, Astro.cookies);
+if (processError || !process) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
 ---
-<EnrollmentDashboardLayout user={user}>
+<EnrollmentDashboardLayout user={user} process={process}>
   <h1>Cursos</h1>
 </EnrollmentDashboardLayout>

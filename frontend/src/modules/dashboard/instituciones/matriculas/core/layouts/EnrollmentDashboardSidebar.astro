@@ -7,9 +7,10 @@ import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
 import LogoutButton from '@/modules/auth/core/components/LogoutButton.astro';
 import { HomeIcon } from '@lucide/astro';
 import type { Route } from '@/modules/core/types/route';
-import { DASHBOARD_ENROLLMENT_ROUTE } from '../lib/routes';
+import { DASHBOARD_ENROLLMENT_ROUTE, getEnrollmentProcessPath } from '../lib/routes';
 import type { EnrollmentProcess } from '../types/process';
-import Timer from '@/modules/dashboard/instituciones/matriculas/core/components/Timer';
+import StateProcessIndicator from '@/modules/dashboard/instituciones/matriculas/core/components/StateProcessIndicator';
+import { getRouteFromPath } from '@/modules/core/lib/routes';
 
 // Por ahora solo se requerira un usuario autenticado, ya que el usuario en la base de datos no tiene un rol como campo
 // Puede comportarse como un administrador o un usuario normal, dependiendo de la institucion a la que pertenezca
@@ -23,18 +24,21 @@ const { user, currentRoute, process } = Astro.props;
 
 const dashboardRoute = DASHBOARD_ENROLLMENT_ROUTE;
 ---
-<aside class="flex-initial basis-54 px-2 py-6 sticky top-0 h-screen bg-background gap-6 flex flex-col items-center justify-between overflow-y-auto">
+<aside class="flex-initial basis-54 px-2 py-6 sticky top-0 h-full bg-background gap-6 flex flex-col items-center justify-between overflow-y-auto border-2 rounded-l-xl shadow-sm">
   <div class="flex flex-col items-center gap-4 w-full">
-    <a href={LANDING_ROUTE.fullPath} class="mb-4">
-      <LogoExtended size="lg"/>
-    </a>
+      <a href={LANDING_ROUTE.fullPath}>
+        <LogoExtended size="md"/>
+      </a>
     <nav class="flex flex-col gap-1 w-full">
       <Button
         as="a"
         variant={dashboardRoute.name === currentRoute.name ? 'default' : 'ghost'}
         size="lg"
         class="w-full justify-start text-left"
-        href={dashboardRoute.name === currentRoute.name ? undefined: dashboardRoute.fullPath}
+        href={dashboardRoute.name === currentRoute.name ? undefined: getEnrollmentProcessPath({
+          institucion_id: process.institutionId,
+          matricula_id: process.id
+        })}
       >
         <HomeIcon />
         <span>Panel</span>
@@ -46,7 +50,10 @@ const dashboardRoute = DASHBOARD_ENROLLMENT_ROUTE;
             variant={option.name === currentRoute.name ? 'default' : 'ghost'}
             size="lg"
             class="w-full justify-start text-left"
-            href={option.name === currentRoute.name ? undefined : option.fullPath}
+            href={option.name === currentRoute.name ? undefined : `${getEnrollmentProcessPath({
+              institucion_id: process.institutionId,
+              matricula_id: process.id
+            })}/${option.path}`}
           >
             {option.icon && <option.icon class="w-5 h-5" />}
             <span>{capitalize(option.path || '')}</span>
@@ -56,7 +63,7 @@ const dashboardRoute = DASHBOARD_ENROLLMENT_ROUTE;
     </nav>
   </div>
   <div class="min-h-12 flex flex-col gap-4 w-full">
-    <Timer endDate={process.startDay} client:load />
+    <StateProcessIndicator endDate={process.startDay} client:load />
     <div class="flex flex-col items-center gap-2">
       <Button class="size-15 rounded-full" variant="outline" size="icon">
           <span class="sr-only">Personal photo</span>

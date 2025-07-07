@@ -10,6 +10,11 @@ const { data: user, error } = await authService.getUser(Astro.cookies);
 if (!user || error) {
   return Astro.redirect(LANDING_ROUTE.fullPath);
 }
+const { institucion_id } = Astro.params;
+
+if (!institucion_id) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
 
 const { matricula_id } = Astro.params;
 if (!matricula_id) {
