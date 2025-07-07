@@ -131,26 +131,6 @@ export const routesConfig: Route = {
                             },
                           ],
                         },
-                        {
-                          name: 'dashboard-instituciones-one-matriculas-one-estudiantes',
-                          title:
-                            'Estudiantes - Matrícula - Institución - Panel de control',
-                          path: 'estudiantes',
-                          fullPath:
-                            '/dashboard/instituciones/:institucion_id/matriculas/:matricula_id/estudiantes',
-                          icon: GraduationCapIcon,
-                          sub: [
-                            {
-                              name: 'dashboard-instituciones-one-matriculas-one-estudiantes-one',
-                              title:
-                                'Estudiante - Matrícula - Institución - Panel de control',
-                              dynamic: true,
-                              param: 'estudiante_id',
-                              fullPath:
-                                '/dashboard/instituciones/:institucion_id/matriculas/:matricula_id/estudiantes/:estudiante_id',
-                            },
-                          ],
-                        },
                       ],
                     },
                   ],

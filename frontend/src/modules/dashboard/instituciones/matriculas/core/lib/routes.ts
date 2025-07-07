@@ -2,7 +2,7 @@ import { getRouteFromPath } from '@/modules/core/lib/routes';
 
 // Only for faster matching
 export const DASHBOARD_ENROLLMENT_ROUTE = getRouteFromPath(
-  '/dashboard/instituciones/:institution_id/matriculas/:matricula_id',
+  '/dashboard/instituciones/:institucion_id/matriculas/:matricula_id',
 );
 
 export const DASHBOARD_ENROLLMENTS_ROUTE = getRouteFromPath(

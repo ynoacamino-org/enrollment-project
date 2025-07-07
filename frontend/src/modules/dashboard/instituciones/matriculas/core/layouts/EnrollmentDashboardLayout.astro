@@ -1,24 +1,27 @@
 ---
 import type { AuthRequired, User } from '@/modules/auth/core/types/user';
 import RootLayout from '@/modules/core/layouts/RootLayout.astro';
-import AdminEnrollmentLateralBar from '@/modules/dashboard/instituciones/matriculas/core/layouts/AdminEnrollmentLateralBar.astro';
 import { getRouteFromPath } from '@/modules/core/lib/routes';
 import type { EnrollmentProcess } from '../types/process';
+import EnrollmentDashboardSideBar from '@/modules/dashboard/instituciones/matriculas/core/layouts/EnrollmentDashboardSidebar.astro';
+import H1 from '@/modules/core/ui/H1.astro';
 
 // Por ahora solo se requerira un usuario autenticado, ya que el usuario en la base de datos no tiene un rol como campo
 // Puede comportarse como un administrador o un usuario normal, dependiendo de la institucion a la que pertenezca
 type Props = AuthRequired<User> & {
   process: EnrollmentProcess;
+  title: string
 };
 
-const { user, process } = Astro.props;
+const { user, process, title } = Astro.props;
 
 const route = getRouteFromPath(Astro.url.pathname);
 
 ---
-<RootLayout route={route} class="flex flex-row min-h-screen">
-  <AdminEnrollmentLateralBar user={user} currentRoute={route} process={process}/>
-  <main class="flex flex-col flex-1 overflow-y-auto py-4 md:py-10 px-6">
+<RootLayout route={route} class="flex flex-row h-screen px-2 py-1">
+  <EnrollmentDashboardSideBar user={user} currentRoute={route} process={process}/>
+  <main class="flex flex-col flex-1 overflow-y-auto px-6 py-4 gap-y-4 border-2 border-l-0 rounded-r-xl">
+    <H1 class="text-center">{title}</H1>
     <slot />
   </main>
 </RootLayout>

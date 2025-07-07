@@ -19,8 +19,8 @@ interface InstitutionListProps {
 export function InstitutionList({ institutions }: InstitutionListProps) {
   return (
     <Card className="w-64 sm:w-md md:w-xl grow">
-      <CardHeader className="gap-x-4">
-        <CardAction className="col-start-1 row-span-2">
+      <CardHeader className="gap-x-4 w-full">
+        <CardAction className="col-end-1 row-span-2">
           <Link variant="ghost" href={LANDING_ROUTE.fullPath}>
             <ArrowLeftIcon />
           </Link>
