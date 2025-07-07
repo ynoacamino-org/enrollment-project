@@ -16,6 +16,8 @@ import type {
   EnrollmentCourse,
   SelectedCourse,
 } from '@/modules/dashboard/instituciones/matriculas/core/types/courses';
+import { actions } from 'astro:actions';
+import { toast } from 'sonner';
 
 export default function CoursesList({
   courses,
@@ -32,12 +34,23 @@ export default function CoursesList({
       .filter(Boolean) as SelectedCourse[];
     setSelectedCourses(newSelectedCourses);
   };
-  const handleEnroll = () => {
-    // Handle enrollment logic here
-    console.log('Enrolling in courses:', selectedCourses);
+  const handleEnroll = async () => {
+    if (selectedCourses.length <= 0) return;
+    const sectionIds = selectedCourses.map((course) => course.section.id);
+    const { data, error } = await actions.enrollments.enroll(sectionIds);
+    if (error || !data) {
+      toast.error(
+        'Error al matricularte en los cursos seleccionados. Por favor, intenta nuevamente.',
+      );
+      return;
+    }
+    if (data) {
+      toast.success('¡Matriculado exitosamente!');
+      setSelectedCourses([]);
+    }
   };
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex gap-x-2">
           Cursos disponibles
@@ -54,7 +67,9 @@ export default function CoursesList({
           Selecciona los turnos de los cursos para ver tu horario
         </CardDescription>
         <CardAction>
-          <Button onClick={handleEnroll}>Matricular</Button>
+          <Button onClick={handleEnroll} disabled={selectedCourses.length <= 0}>
+            Matricular
+          </Button>
         </CardAction>
       </CardHeader>
       <CardContent>
