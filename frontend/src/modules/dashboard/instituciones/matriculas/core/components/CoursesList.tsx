@@ -1,5 +1,4 @@
 import { Accordion } from '@/modules/core/ui/accordion';
-import type { EnrollmentCourse } from '../types/process';
 import {
   Card,
   CardAction,
@@ -13,14 +12,30 @@ import { Badge } from '@/modules/core/ui/badge';
 import { CalendarRangeIcon, ScaleIcon } from 'lucide-react';
 import { CourseItem } from '@/modules/dashboard/instituciones/matriculas/core/components/CourseItem';
 import { useState } from 'react';
+import type {
+  EnrollmentCourse,
+  SelectedCourse,
+} from '@/modules/dashboard/instituciones/matriculas/core/types/courses';
 
 export default function CoursesList({
   courses,
 }: {
   courses: EnrollmentCourse[];
 }) {
-  const [values, setValues] = useState<string[]>([]);
-
+  const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([]);
+  const values = selectedCourses.map((course) => course.id.toString());
+  const setValues = (newValues: string[]) => {
+    const newSelectedCourses = newValues
+      .map((value) => {
+        return courses.find((course) => course.id.toString() === value);
+      })
+      .filter(Boolean) as SelectedCourse[];
+    setSelectedCourses(newSelectedCourses);
+  };
+  const handleEnroll = () => {
+    // Handle enrollment logic here
+    console.log('Enrolling in courses:', selectedCourses);
+  };
   return (
     <Card>
       <CardHeader>
@@ -39,7 +54,7 @@ export default function CoursesList({
           Selecciona los turnos de los cursos para ver tu horario
         </CardDescription>
         <CardAction>
-          <Button>Matricular</Button>
+          <Button onClick={handleEnroll}>Matricular</Button>
         </CardAction>
       </CardHeader>
       <CardContent>

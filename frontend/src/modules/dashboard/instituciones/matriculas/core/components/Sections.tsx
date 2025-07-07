@@ -35,7 +35,7 @@ function SectionItem({ section }: { section: EnrollmentSection }) {
 
 function Sections({ sections }: { sections: EnrollmentSection[] }) {
   return (
-    <div className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(100px,1fr))]">
+    <div className="grid gap-2 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
       {sections.map((section) => (
         <SectionItem key={section.id} section={section} />
       ))}

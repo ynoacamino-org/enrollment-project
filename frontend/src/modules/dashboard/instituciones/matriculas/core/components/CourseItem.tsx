@@ -11,10 +11,8 @@ import { CourseItemProvider } from '@/modules/dashboard/instituciones/matriculas
 import { Sections } from '@/modules/dashboard/instituciones/matriculas/core/components/Sections';
 import { isAvailableSection } from '@/modules/dashboard/instituciones/matriculas/core/lib/sections';
 import { useSections } from '@/modules/dashboard/instituciones/matriculas/core/services/useSection';
-import type {
-  EnrollmentCourse,
-  EnrollmentSection,
-} from '@/modules/dashboard/instituciones/matriculas/core/types/process';
+import type { EnrollmentCourse } from '@/modules/dashboard/instituciones/matriculas/core/types/courses';
+import type { EnrollmentSection } from '@/modules/dashboard/instituciones/matriculas/core/types/process';
 import { CalendarRangeIcon, ScaleIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -26,7 +24,7 @@ function CourseItem({
   values: string[];
 }) {
   const [isSectionsLoaded, setIsSectionsLoaded] = useState(
-    values.includes(`item-${course.id}`),
+    values.includes(course.id.toString()),
   );
   const [wantToSelect, setWantToSelect] = useState(false);
   const { sections, isLoading } = useSections(
@@ -35,7 +33,9 @@ function CourseItem({
   );
 
   useEffect(() => {
-    setIsSectionsLoaded((prev) => prev || values.includes(`item-${course.id}`));
+    setIsSectionsLoaded(
+      (prev) => prev || values.includes(course.id.toString()),
+    );
   }, [values]);
 
   const [selected, setSelected] = useState<EnrollmentSection | null>(null);
@@ -67,7 +67,7 @@ function CourseItem({
       isSelected={isSelected}
       toggleIsSelected={toggleIsSelected}
     >
-      <AccordionItem value={`item-${course.id}`}>
+      <AccordionItem value={course.id.toString()}>
         <div className="flex items-center gap-x-2">
           <Checkbox
             className="border-muted-foreground"
