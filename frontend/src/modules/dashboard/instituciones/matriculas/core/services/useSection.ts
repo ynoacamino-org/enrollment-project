@@ -1,7 +1,7 @@
 import useSWR from 'swr';
-import { enrollmentSectionService } from './section';
+import { actions } from 'astro:actions';
 
-export const useSeccions = (
+export const useSections = (
   { courseId }: { courseId: number },
   options?: { enabled?: boolean },
 ) => {
@@ -9,7 +9,7 @@ export const useSeccions = (
 
   const { data, error, isLoading } = useSWR(
     enabled ? ['getSectionsByCourseId', courseId] : null,
-    () => enrollmentSectionService().getEnrollmentCourseById(courseId),
+    () => actions.courses.getSectionsByCourseId(courseId),
   );
 
   return {

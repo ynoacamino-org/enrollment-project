@@ -2,7 +2,7 @@
 import { authService } from '@/modules/auth/core/services/auth';
 import Button from '@/modules/core/ui/button.astro';
 import EnrollmentDashboardLayout from '@/modules/dashboard/instituciones/matriculas/core/layouts/EnrollmentDashboardLayout.astro';
-import { processService } from '@/modules/dashboard/instituciones/matriculas/core/services/process.server';
+import { processService } from '@/modules/dashboard/instituciones/matriculas/core/services/process';
 import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
 
 const { data: user, error } = await authService.getUser(Astro.cookies);
@@ -20,6 +20,6 @@ if (processError || !process) {
   return Astro.redirect(LANDING_ROUTE.fullPath);
 }
 ---
-<EnrollmentDashboardLayout user={user} process={process}>
+<EnrollmentDashboardLayout user={user} process={process} title="Cursos">
   <h1>Cursos</h1>
 </EnrollmentDashboardLayout>

@@ -1,14 +1,5 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/modules/core/ui/accordion';
-import type { EnrollmentCourse, EnrollmentSection } from '../types/process';
-import { capitalize } from '@/modules/core/lib/utils';
-import { useSeccions } from '../services/useSection';
-import { useState } from 'react';
-import { Skeleton } from '@/modules/core/ui/skeleton';
+import { Accordion } from '@/modules/core/ui/accordion';
+import type { EnrollmentCourse } from '../types/process';
 import {
   Card,
   CardAction,
@@ -18,60 +9,10 @@ import {
   CardTitle,
 } from '@/modules/core/ui/card';
 import { Button } from '@/modules/core/ui/button';
-import { Checkbox } from '@/modules/core/ui/checkbox';
-
-function SectionInfo({ section }: { section: EnrollmentSection }) {
-  return (
-    <div key={section.id} className="border-2 border-border rounded-md p-4">
-      <div className="w-full flex justify-between items-center">
-        <span className="text-2xl text-primary">{section.section_name}</span>
-        <span>
-          Plazas ocupadas:{' '}
-          {section.taken_places < 10
-            ? '0' + section.taken_places
-            : section.taken_places}{' '}
-          / {section.total_places}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function CourseAcordionItem({
-  course,
-  values,
-}: {
-  course: EnrollmentCourse;
-  values: string[];
-}) {
-  const { sections, isLoading } = useSeccions(
-    { courseId: course.id },
-    { enabled: values.includes(`item-${course.id}`) },
-  );
-
-  return (
-    <AccordionItem value={`item-${course.id}`}>
-      <div className="flex items-center gap-x-2">
-        <Checkbox className="border-muted-foreground" />
-        <AccordionTrigger>{capitalize(course.name)}</AccordionTrigger>
-      </div>
-      <AccordionContent>
-        <p>Créditos: {course.credits}</p>
-        <p>Ciclo: {course.cicle_number}</p>
-        <h3>Secciones disponibles:</h3>
-        {!isLoading && sections ? (
-          <div className="mb-2 flex flex-col gap-4 mt-2">
-            {sections.map((section) => (
-              <SectionInfo key={section.id} section={section} />
-            ))}
-          </div>
-        ) : (
-          <Skeleton className="h-20 w-full" />
-        )}
-      </AccordionContent>
-    </AccordionItem>
-  );
-}
+import { Badge } from '@/modules/core/ui/badge';
+import { CalendarRangeIcon, ScaleIcon } from 'lucide-react';
+import { CourseItem } from '@/modules/dashboard/instituciones/matriculas/core/components/CourseItem';
+import { useState } from 'react';
 
 export default function CoursesList({
   courses,
@@ -83,7 +24,17 @@ export default function CoursesList({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Cursos disponibles</CardTitle>
+        <CardTitle className="flex gap-x-2">
+          Cursos disponibles
+          <Badge variant="secondary">
+            <ScaleIcon />
+            Créditos
+          </Badge>
+          <Badge variant="secondary">
+            <CalendarRangeIcon />
+            Ciclo
+          </Badge>
+        </CardTitle>
         <CardDescription>
           Selecciona los turnos de los cursos para ver tu horario
         </CardDescription>
@@ -94,16 +45,12 @@ export default function CoursesList({
       <CardContent>
         <Accordion
           type="multiple"
-          className="w-full max-w-4xl font-medium"
+          className="w-full font-medium"
           onValueChange={setValues}
           value={values}
         >
           {courses.map((course) => (
-            <CourseAcordionItem
-              key={course.id}
-              course={course}
-              values={values}
-            />
+            <CourseItem key={course.id} course={course} values={values} />
           ))}
         </Accordion>
       </CardContent>
