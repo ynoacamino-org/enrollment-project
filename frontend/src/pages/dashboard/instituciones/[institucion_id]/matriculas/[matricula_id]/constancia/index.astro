@@ -4,7 +4,7 @@ import Button from '@/modules/core/ui/button.astro';
 import EnrollmentDashboardLayout from '@/modules/dashboard/instituciones/matriculas/core/layouts/EnrollmentDashboardLayout.astro';
 import { processService } from '@/modules/dashboard/instituciones/matriculas/core/services/process';
 import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
-import {ViewAndDownloadPDF} from '@/modules/dashboard/instituciones/constancia/core/PDF';
+import {ViewAndDownloadPDF} from '@/modules/dashboard/instituciones/constancia/core/components/PDF';
 
 const { data: user, error } = await authService.getUser(Astro.cookies);
 
