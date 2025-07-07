@@ -9,7 +9,7 @@ import { HomeIcon } from '@lucide/astro';
 import type { Route } from '@/modules/core/types/route';
 import { DASHBOARD_ENROLLMENT_ROUTE } from '../lib/routes';
 import type { EnrollmentProcess } from '../types/process';
-import Timer from '@/modules/dashboard/instituciones/matriculas/core/components/Timer'
+import Timer from '@/modules/dashboard/instituciones/matriculas/core/components/Timer';
 
 // Por ahora solo se requerira un usuario autenticado, ya que el usuario en la base de datos no tiene un rol como campo
 // Puede comportarse como un administrador o un usuario normal, dependiendo de la institucion a la que pertenezca
@@ -56,11 +56,7 @@ const dashboardRoute = DASHBOARD_ENROLLMENT_ROUTE;
     </nav>
   </div>
   <div class="min-h-12 flex flex-col gap-4 w-full">
-    <div class="flex flex-col items-center gap-2 rounded-xl bg-muted py-2">
-      <span class="text-sm text-muted-foreground">Faltan:</span>
-      <span>{process.startDay}</span>
-      <Timer endDate={process.startDay} client:only />
-    </div>
+    <Timer endDate={process.startDay} client:load />
     <div class="flex flex-col items-center gap-2">
       <Button class="size-15 rounded-full" variant="outline" size="icon">
           <span class="sr-only">Personal photo</span>

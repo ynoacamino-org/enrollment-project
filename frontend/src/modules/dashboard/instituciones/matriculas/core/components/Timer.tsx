@@ -1,38 +1,40 @@
+import { Badge } from '@/modules/core/ui/badge';
+import { parseTime } from '@/modules/dashboard/core/lib/utils';
 import { useEffect, useState } from 'react';
 
 export default function Timer({ endDate }: { endDate: number }) {
-  const [timeLeft, setTimeLeft] = useState('00:00:00');
+  const [{ remaining, isEnded }, setTime] = useState({
+    remaining: '00:00:00',
+    isEnded: false,
+  });
 
   useEffect(() => {
+    const now = Date.now();
+    const diff = endDate - now;
+
+    if (diff <= 0)
+      return () => setTime({ remaining: '00:00:00', isEnded: true });
+
     const updateTimer = () => {
       const now = Date.now();
       const diff = endDate - now;
 
       if (diff <= 0) {
-        setTimeLeft('00:00:00');
-        clearInterval(intervalId);
+        setTime({ remaining: '00:00:00', isEnded: true });
         return;
       }
-
-      const totalSeconds = Math.floor(diff / 1000);
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-
-      const formatted = [
-        String(hours).padStart(2, '0'),
-        String(minutes).padStart(2, '0'),
-        String(seconds).padStart(2, '0'),
-      ].join(':');
-
-      setTimeLeft(formatted);
+      setTime({ remaining: parseTime(diff), isEnded: false });
     };
 
-    updateTimer(); // actualizar inmediatamente al montar
     const intervalId = setInterval(updateTimer, 1000); // luego cada segundo
-
+    updateTimer(); // actualizar inmediatamente al montar
     return () => clearInterval(intervalId); // limpiar al desmontar
   }, [endDate]);
 
-  return <span>{timeLeft}</span>;
+  return (
+    <div className="flex flex-col items-center gap-0.5 rounded-xl py-2">
+      {!isEnded && <b className="text-sm">Faltan</b>}
+      <Badge>{isEnded ? '¡Ya inició!' : remaining}</Badge>
+    </div>
+  );
 }
