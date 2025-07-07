@@ -248,7 +248,7 @@ func (s *enrollmentsrvc) EnrollmentInCourses(ctx context.Context, p []*enrollmen
 	}, nil
 }
 
-func (s *enrollmentsrvc) GetEnrollmentInCourses(ctx context.Context, payload *enrollment.GetEnrollmentInCoursesPayload) ([]*enrollment.EnrollmentInCoursesResult, error) {
+func (s *enrollmentsrvc) GetEnrollmentInCourses(ctx context.Context) ([]*enrollment.EnrollmentInCoursesResult, error) {
 	token := utils.GetTokenFromContext(ctx)
 	_, err := s.OauthRepo.GetSessionByToken(ctx, token)
 	if err != nil {

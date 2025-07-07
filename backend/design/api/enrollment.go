@@ -184,18 +184,10 @@ var _ = Service("enrollment", func() {
 	Method("GetEnrollmentInCourses", func() {
 		Description("Get the enrollment status of a student in courses")
 
-		Payload(func() {
-			Attribute("studentId", Int32, "ID of the student to get enrollment status for", func() {
-				Example(1)
-			})
-			Required("studentId")
-		})
-
 		Result(ArrayOf(types.EnrollmentInCoursesResult))
 
 		HTTP(func() {
-			GET("/courses/enrollment/{studentId}")
-			Param("studentId", Int32, "ID of the student")
+			GET("/courses/enrollmented")
 			Response(StatusOK)
 			Response("not_authorized", StatusForbidden)
 			Response("bad_request", StatusBadRequest)
