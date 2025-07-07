@@ -4,7 +4,6 @@ import { getFlattenedRouteMap } from '@/modules/core/lib/route-map';
 const routeMap = getFlattenedRouteMap();
 
 export function getRouteFromPath(path: string): Route {
-  console.log('Path: ', path);
   const cleanPath = path.replace(/\/+$/, '') || '/';
 
   // Buscar ruta exacta
@@ -25,7 +24,6 @@ export function getRouteFromPath(path: string): Route {
         ...route,
         fullPath: cleanPath,
       };
-      console.log('Clean path: ', cleanPath);
       return calculatedRoute;
     }
   }
