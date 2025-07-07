@@ -32,7 +32,7 @@ const dashboardRoute = DASHBOARD_ENROLLMENT_ROUTE;
     <nav class="flex flex-col gap-1 w-full">
       <Button
         as="a"
-        variant={dashboardRoute.name === currentRoute.name ? 'default' : 'ghost'}
+        variant={dashboardRoute.name === currentRoute.name ? 'secondary' : 'ghost'}
         size="lg"
         class="w-full justify-start text-left"
         href={dashboardRoute.name === currentRoute.name ? undefined: getEnrollmentProcessPath({
@@ -47,7 +47,7 @@ const dashboardRoute = DASHBOARD_ENROLLMENT_ROUTE;
         dashboardRoute.sub?.map((option) =>
           <Button
             as="a"
-            variant={option.name === currentRoute.name ? 'default' : 'ghost'}
+            variant={option.name === currentRoute.name ? 'secondary' : 'ghost'}
             size="lg"
             class="w-full justify-start text-left"
             href={option.name === currentRoute.name ? undefined : `${getEnrollmentProcessPath({

@@ -9,6 +9,16 @@ import { capitalize } from '@/modules/core/lib/utils';
 import { useSeccions } from '../services/useSection';
 import { useState } from 'react';
 import { Skeleton } from '@/modules/core/ui/skeleton';
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/modules/core/ui/card';
+import { Button } from '@/modules/core/ui/button';
+import { Checkbox } from '@/modules/core/ui/checkbox';
 
 function SectionInfo({ section }: { section: EnrollmentSection }) {
   return (
@@ -41,7 +51,10 @@ function CourseAcordionItem({
 
   return (
     <AccordionItem value={`item-${course.id}`}>
-      <AccordionTrigger>{capitalize(course.name)}</AccordionTrigger>
+      <div className="flex items-center gap-x-2">
+        <Checkbox className="border-muted-foreground" />
+        <AccordionTrigger>{capitalize(course.name)}</AccordionTrigger>
+      </div>
       <AccordionContent>
         <p>Créditos: {course.credits}</p>
         <p>Ciclo: {course.cicle_number}</p>
@@ -68,11 +81,17 @@ export default function CoursesList({
   const [values, setValues] = useState<string[]>([]);
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      <div className="w-full flex items-center justify-center flex-col gap-4 pt-10">
-        <h2 className="text-xl text-start w-full max-w-4xl font-medium">
-          Lista de cursos disponible
-        </h2>
+    <Card>
+      <CardHeader>
+        <CardTitle>Cursos disponibles</CardTitle>
+        <CardDescription>
+          Selecciona los turnos de los cursos para ver tu horario
+        </CardDescription>
+        <CardAction>
+          <Button>Matricular</Button>
+        </CardAction>
+      </CardHeader>
+      <CardContent>
         <Accordion
           type="multiple"
           className="w-full max-w-4xl font-medium"
@@ -87,7 +106,7 @@ export default function CoursesList({
             />
           ))}
         </Accordion>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

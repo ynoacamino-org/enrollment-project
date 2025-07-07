@@ -26,9 +26,7 @@ if (processError || !process) {
   return Astro.redirect(LANDING_ROUTE.fullPath);
 }
 ---
-<EnrollmentDashboardLayout user={user} process={process}>
-  <h1 class="text-3xl font-semibold mb-4">
-    Matrículas {capitalize(process.name) || 'desconocida'}
-  </h1>
+
+<EnrollmentDashboardLayout user={user} process={process} title={`Matrículas ${capitalize(process.name) || 'desconocida'}`}>
   <CoursesList client:load courses={process.courses}/>
 </EnrollmentDashboardLayout>
