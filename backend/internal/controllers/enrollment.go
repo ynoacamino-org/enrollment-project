@@ -215,3 +215,68 @@ func (s *enrollmentsrvc) ExpandCourse(ctx context.Context, p *enrollment.ExpandC
 
 	return res, nil
 }
+
+func (s *enrollmentsrvc) EnrollmentInCourses(ctx context.Context, p []*enrollment.SectionEnrollment) (res *enrollment.EnrollmentInCoursesResult2, err error) {
+	token := utils.GetTokenFromContext(ctx)
+	_, err = s.OauthRepo.GetSessionByToken(ctx, token)
+	if err != nil {
+		return nil, enrollment.MakeNotAuthorized(fmt.Errorf("failed to get session by token: %w", err))
+	}
+
+	studentId, err := s.StudentRepo.GetStudentIdByToken(ctx, token)
+	if err != nil {
+		return nil, enrollment.MakeInternalServerError(fmt.Errorf("failed to get student ID by token: %w", err))
+	}
+
+	for _, section := range p {
+		if section.SectionID <= 0 {
+			return nil, enrollment.MakeInternalServerError(fmt.Errorf("invalid section ID: %d", section.SectionID))
+		}
+
+		err = s.SectionRepo.RegisterStudentInSection(ctx, db.RegisterStudentInSectionParams{
+			StudentID: studentId,
+			SectionID: int32(section.SectionID),
+		})
+		if err != nil {
+			return nil, enrollment.MakeInternalServerError(fmt.Errorf("failed to enroll student in section %d: %w", section.SectionID, err))
+		}
+
+	}
+
+	return &enrollment.EnrollmentInCoursesResult2{
+		Message: "Enrollment successful",
+	}, nil
+}
+
+func (s *enrollmentsrvc) GetEnrollmentInCourses(ctx context.Context, payload *enrollment.GetEnrollmentInCoursesPayload) ([]*enrollment.EnrollmentInCoursesResult, error) {
+	token := utils.GetTokenFromContext(ctx)
+	_, err := s.OauthRepo.GetSessionByToken(ctx, token)
+	if err != nil {
+		return nil, enrollment.MakeNotAuthorized(fmt.Errorf("failed to get session by token: %w", err))
+	}
+
+	studentId, err := s.StudentRepo.GetStudentIdByToken(ctx, token)
+	if err != nil {
+		return nil, enrollment.MakeInternalServerError(fmt.Errorf("failed to get student ID by token: %w", err))
+	}
+
+	enrollments, err := s.SectionRepo.ListSectionsByRegisterStudentId(ctx, studentId)
+	if err != nil {
+		return nil, enrollment.MakeInternalServerError(fmt.Errorf("failed to get enrollments: %w", err))
+	}
+
+	res := make([]*enrollment.EnrollmentInCoursesResult, 0, len(enrollments))
+
+	for _, e := range enrollments {
+		res = append(res, &enrollment.EnrollmentInCoursesResult{
+			SectionID:   int32(e.SectionID),
+			SectionName: e.SectionName,
+			CourseID:    int32(e.CourseID),
+			CourseName:  e.CourseName,
+			CycleNumber: int32(e.CourseCycleNumber),
+			Credits:     int32(e.CourseCredits),
+		})
+	}
+
+	return res, nil
+}
