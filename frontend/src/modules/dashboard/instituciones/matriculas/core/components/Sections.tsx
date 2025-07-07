@@ -1,12 +1,21 @@
 import { Badge } from '@/modules/core/ui/badge';
 import { Button } from '@/modules/core/ui/button';
+import { useCourseItem } from '@/modules/dashboard/instituciones/matriculas/core/components/CourseItemContext';
 import type { EnrollmentSection } from '@/modules/dashboard/instituciones/matriculas/core/types/process';
 import { UserIcon } from 'lucide-react';
 
 // TODO: Add time for section
 function SectionItem({ section }: { section: EnrollmentSection }) {
+  const { selected, setSelected } = useCourseItem();
   return (
-    <Button key={section.id} variant="outline" size="lg" className="p-2">
+    <Button
+      key={section.id}
+      variant={selected?.id === section.id ? 'accent' : 'outline'}
+      disabled={section.taken_places >= section.total_places}
+      size="lg"
+      className="p-2"
+      onClick={() => selected?.id !== section.id && setSelected(section)}
+    >
       <span className="text-2xl text-primary">{section.section_name}</span>
       <Badge variant="secondary">
         <UserIcon />
