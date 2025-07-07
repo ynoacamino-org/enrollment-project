@@ -20,7 +20,7 @@ const route = getRouteFromPath(Astro.url.pathname);
 ---
 <RootLayout route={route} class="flex flex-row h-screen px-2 py-1">
   <EnrollmentDashboardSideBar user={user} currentRoute={route} process={process}/>
-  <main class="flex flex-col flex-1 overflow-y-auto px-6 py-4 gap-y-4 border-2 border-l-0 rounded-r-xl">
+  <main class="flex flex-col flex-1 overflow-y-auto px-6 py-4 gap-y-4 border-2 border-l-0 rounded-r-xl items-center">
     <H1 class="text-center">{title}</H1>
     <slot />
   </main>
