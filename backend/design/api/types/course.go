@@ -120,3 +120,34 @@ var SectionWithEvents = Type("SectionWithEvents", func() {
 
 	Required("id", "section_name", "taken_places", "total_places", "events")
 })
+
+var EnrollmentInCoursesResult = Type("EnrollmentInCoursesResult", func() {
+	Description("Result of enrollment in courses")
+
+	Attribute("section_id", Int32, func() {
+		Description("ID of the section in which the student is enrolled")
+		Example(2)
+	})
+	Attribute("section_name", String, func() {
+		Description("Name of the section in which the student is enrolled")
+		Example("Sección A")
+	})
+	Attribute("course_id", Int32, func() {
+		Description("ID of the course in which the student is enrolled")
+		Example(144)
+	})
+	Attribute("course_name", String, func() {
+		Description("Name of the course in which the student is enrolled")
+		Example("Introduction to Programming")
+	})
+	Attribute("cycle_number", Int32, func() {
+		Description("Cycle number of the course in which the student is enrolled")
+		Example(1)
+	})
+	Attribute("credits", Int32, func() {
+		Description("Number of credits for the course in which the student is enrolled")
+		Example(3)
+	})
+
+	Required("section_id", "section_name", "course_id", "course_name", "cycle_number", "credits")
+})
