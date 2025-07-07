@@ -18,26 +18,27 @@ import type {
 } from '@/modules/dashboard/instituciones/matriculas/core/types/courses';
 import { actions } from 'astro:actions';
 import { toast } from 'sonner';
+import type { EnrollmentSection } from '@/modules/dashboard/instituciones/matriculas/core/types/process';
 
 export default function CoursesList({
   courses,
 }: {
   courses: EnrollmentCourse[];
 }) {
+  const [values, setValues] = useState<string[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([]);
-  const values = selectedCourses.map((course) => course.id.toString());
-  const setValues = (newValues: string[]) => {
-    const newSelectedCourses = newValues
-      .map((value) => {
-        return courses.find((course) => course.id.toString() === value);
-      })
-      .filter(Boolean) as SelectedCourse[];
-    setSelectedCourses(newSelectedCourses);
+  const handleSelection = (
+    section: EnrollmentSection,
+    course: EnrollmentCourse,
+  ) => {
+    setSelectedCourses((prev) => [...prev, { ...course, section }]);
   };
   const handleEnroll = async () => {
+    console.log('Selected courses: ', selectedCourses);
     if (selectedCourses.length <= 0) return;
     const sectionIds = selectedCourses.map((course) => course.section.id);
-    const { data, error } = await actions.enrollments.enroll(sectionIds);
+    console.log(sectionIds);
+    const { data, error } = await actions.courses.enroll(sectionIds);
     if (error || !data) {
       toast.error(
         'Error al matricularte en los cursos seleccionados. Por favor, intenta nuevamente.',
@@ -80,7 +81,12 @@ export default function CoursesList({
           value={values}
         >
           {courses.map((course) => (
-            <CourseItem key={course.id} course={course} values={values} />
+            <CourseItem
+              key={course.id}
+              course={course}
+              values={values}
+              handleSelection={handleSelection}
+            />
           ))}
         </Accordion>
       </CardContent>

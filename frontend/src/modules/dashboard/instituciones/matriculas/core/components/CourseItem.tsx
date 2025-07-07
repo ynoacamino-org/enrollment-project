@@ -19,9 +19,14 @@ import { useEffect, useState } from 'react';
 function CourseItem({
   course,
   values,
+  handleSelection,
 }: {
   course: EnrollmentCourse;
   values: string[];
+  handleSelection: (
+    section: EnrollmentSection,
+    course: EnrollmentCourse,
+  ) => void;
 }) {
   const [isSectionsLoaded, setIsSectionsLoaded] = useState(
     values.includes(course.id.toString()),
@@ -49,6 +54,9 @@ function CourseItem({
           isAvailableSection(section),
         );
         setSelected(inferSelected || null);
+        if (inferSelected) {
+          handleSelection(inferSelected, course);
+        }
       }
       setWantToSelect(false);
     }

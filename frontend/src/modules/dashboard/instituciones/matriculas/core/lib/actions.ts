@@ -1,5 +1,4 @@
 import { coursesService } from '@/modules/dashboard/instituciones/matriculas/core/services/courses';
-import { enrollmentService } from '@/modules/dashboard/instituciones/matriculas/core/services/enrollments';
 import { defineAction } from 'astro:actions';
 
 export const courses = {
@@ -15,12 +14,9 @@ export const courses = {
       return data;
     },
   }),
-};
-
-export const enrollments = {
   enroll: defineAction({
     handler: async (sectionIds, ctx) => {
-      const { data, error } = await enrollmentService.enroll(
+      const { data, error } = await coursesService.enroll(
         sectionIds,
         ctx.cookies,
       );

@@ -41,6 +41,37 @@ class CoursesService extends ApiService {
       };
     }
   }
+  async enroll(sectionIds: string[], cookies: AstroCookies) {
+    const { data: sessionToken, error } =
+      await authService.validateSessionToken(cookies);
+
+    if (error) {
+      return {
+        data: undefined,
+        error: error,
+      };
+    }
+
+    try {
+      console.log(JSON.stringify(sectionIds));
+      return this.request({
+        mapping: 'enrollmented',
+        options: {
+          method: 'POST',
+          headers: {
+            Cookie: `session_token=${sessionToken}`,
+          },
+          body: JSON.stringify(sectionIds),
+        },
+      });
+    } catch (error) {
+      console.log('[enroll] Error:', error);
+      return {
+        data: undefined,
+        error: INTERNAL_SERVER_ERROR,
+      };
+    }
+  }
 }
 
 export const coursesService = new CoursesService();
