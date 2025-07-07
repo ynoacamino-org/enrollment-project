@@ -26,6 +26,6 @@ if (institutionError) {
 ---
 <DashboardLayout user={user}>
   <div class="min-h-full flex-1 flex flex-col justify-between py-4 gap-2">
-    <EnrollmentProcessList institution={institution} client:visible />
+    <EnrollmentProcessList institution={institution} client:only="react" />
   </div>
 </DashboardLayout>

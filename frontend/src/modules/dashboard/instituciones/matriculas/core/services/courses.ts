@@ -2,19 +2,18 @@ import { authService } from '@/modules/auth/core/services/auth';
 import { INTERNAL_SERVER_ERROR } from '@/modules/core/lib/errors';
 import { ApiService } from '@/modules/core/services/api';
 import type { ApiResponse } from '@/modules/core/types/api';
-
+import type { EnrollmentSection } from '@/modules/dashboard/instituciones/matriculas/core/types/process';
 import type { AstroCookies } from 'astro';
-import type { EnrollmentProcess } from '../types/process';
 
-class ProcessService extends ApiService {
+class CoursesService extends ApiService {
   constructor() {
-    super('processes');
+    super('courses');
   }
 
-  async getProcessById(
-    proccessId: string,
+  async getSectionsByCourseId(
+    courseId: string,
     cookies: AstroCookies,
-  ): ApiResponse<EnrollmentProcess> {
+  ): ApiResponse<EnrollmentSection[]> {
     const { data: sessionToken, error } =
       await authService.validateSessionToken(cookies);
 
@@ -24,10 +23,9 @@ class ProcessService extends ApiService {
         error: error,
       };
     }
-
     try {
-      return this.request<EnrollmentProcess>({
-        mapping: `${proccessId}`,
+      return this.request<EnrollmentSection[]>({
+        mapping: `${courseId}/sections`,
         options: {
           method: 'GET',
           headers: {
@@ -36,7 +34,7 @@ class ProcessService extends ApiService {
         },
       });
     } catch (error) {
-      console.log('[getProcessById] Error:', error);
+      console.error('[getCoursesByProcessId] Error:', error);
       return {
         data: undefined,
         error: INTERNAL_SERVER_ERROR,
@@ -45,4 +43,4 @@ class ProcessService extends ApiService {
   }
 }
 
-export const processService = new ProcessService();
+export const coursesService = new CoursesService();

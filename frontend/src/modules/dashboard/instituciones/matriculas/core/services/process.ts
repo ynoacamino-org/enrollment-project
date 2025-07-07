@@ -1,75 +1,42 @@
+import { authService } from '@/modules/auth/core/services/auth';
 import { INTERNAL_SERVER_ERROR } from '@/modules/core/lib/errors';
+import { ApiService } from '@/modules/core/services/api';
 import type { ApiResponse } from '@/modules/core/types/api';
-import type { EnrollmentProcess } from '@/modules/dashboard/instituciones/matriculas/core/types/process';
-import { BACKEND_URL } from 'astro:env/client';
 
-class EnrollmentProcessService {
-  private enrrolmentApiUrl: string;
+import type { AstroCookies } from 'astro';
+import type { EnrollmentProcess } from '../types/process';
 
+class ProcessService extends ApiService {
   constructor() {
-    this.enrrolmentApiUrl = `${BACKEND_URL}`;
+    super('processes');
   }
 
-  // async getAllEnrollmentProcesses(
-  //   institutionId: string,
-  // ): ApiResponse<EnrollmentProcess[]> {
-  //   try {
-  //     const response = await fetch(
-  //       `${this.enrrolmentApiUrl}/processes/${institutionId}`,
-  //       {
-  //         method: 'GET',
-  //       },
-  //     );
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       return {
-  //         data: undefined,
-  //         error: {
-  //           status: response.status,
-  //           message:
-  //             errorData.message || 'Failed to fetch enrollment processes',
-  //         },
-  //       };
-  //     }
-
-  //     const data = await response.json();
-  //     return { data, error: undefined };
-  //   } catch (error) {
-  //     console.error('[getAllEnrollmentProcesses] Error:', error);
-  //     return {
-  //       data: undefined,
-  //       error: INTERNAL_SERVER_ERROR,
-  //     };
-  //   }
-  // }
-
-  async getEnrollmentProcessById(
-    processId: string,
+  async getProcessById(
+    proccessId: string,
+    cookies: AstroCookies,
   ): ApiResponse<EnrollmentProcess> {
+    const { data: sessionToken, error } =
+      await authService.validateSessionToken(cookies);
+
+    if (error) {
+      return {
+        data: undefined,
+        error: error,
+      };
+    }
+
     try {
-      const response = await fetch(
-        `${this.enrrolmentApiUrl}/processes/${processId}/courses`,
-        {
+      return this.request<EnrollmentProcess>({
+        mapping: `${proccessId}`,
+        options: {
           method: 'GET',
-        },
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        return {
-          data: undefined,
-          error: {
-            status: response.status,
-            message: errorData.message || 'Failed to fetch enrollment process',
+          headers: {
+            Cookie: `session_token=${sessionToken}`,
           },
-        };
-      }
-
-      const data = await response.json();
-      return { data, error: undefined };
+        },
+      });
     } catch (error) {
-      console.error('[getEnrollmentProcessById] Error:', error);
+      console.log('[getProcessById] Error:', error);
       return {
         data: undefined,
         error: INTERNAL_SERVER_ERROR,
@@ -78,4 +45,4 @@ class EnrollmentProcessService {
   }
 }
 
-export const enrollmentProcessService = () => new EnrollmentProcessService();
+export const processService = new ProcessService();
