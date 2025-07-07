@@ -57,3 +57,25 @@ LEFT JOIN modality m ON m.id = e.modality_id
 JOIN student_available_courses sac ON sac.course_id = s.course_id
 WHERE s.course_id = $1 AND sac.student_id = $2
 ORDER BY s.id, e.start_date;
+
+
+-- name: RegisterStudentInSection :exec
+INSERT INTO register (
+    student_id, section_id
+) VALUES (
+    $1, $2
+);
+
+-- name: ListSectionsByRegisterStudentId :many
+SELECT
+    s.id AS section_id,
+    s.name AS section_name,
+    c.id AS course_id,
+    c.name AS course_name,
+    c.credits AS course_credits,
+    c.cycle_number AS course_cycle_number
+FROM register r
+JOIN section s ON r.section_id = s.id
+JOIN course c ON s.course_id = c.id
+WHERE r.student_id = $1
+ORDER BY c.id, s.name;

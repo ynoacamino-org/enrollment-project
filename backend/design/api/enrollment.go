@@ -62,12 +62,24 @@ var ListAllCoursesAvailableByStudentInProcessResult = Type("ListAllCoursesAvaila
 	Required("courses")
 })
 
+var SectionEnrollment = Type("SectionEnrollment", func() {
+	Description("SectionEnrollment representa la inscripción de un estudiante en una sección de curso")
+
+	Attribute("sectionId", Int32, "ID de la sección en la que el estudiante se está inscribiendo", func() {
+		Example(1)
+	})
+
+	Required("sectionId")
+})
+
 var _ = Service("enrollment", func() {
 	Description("The enrollment service provides endpoints for managing educational institutions and their processes.")
 
 	Error("not_authorized", ErrorResult, "User is not authorized to access this resource")
 
 	Error("internal_server_error", ErrorResult, "An internal server error occurred")
+
+	Error("bad_request", ErrorResult, "The request was invalid or malformed")
 
 	// Institutions service provides endpoints for managing educational institutions.
 	Method("ListInstitutions", func() {
@@ -146,4 +158,48 @@ var _ = Service("enrollment", func() {
 		})
 	})
 
+	Method("EnrollmentInCourses", func() {
+		Description("Enroll a student in one or more sections of courses")
+
+		Payload(ArrayOf(SectionEnrollment))
+
+		// responder como ok
+		Result(func() {
+			Description("Enrollment successful")
+			Attribute("message", String, "Success message", func() {
+				Example("Enrollment successful")
+			})
+			Required("message")
+		})
+
+		HTTP(func() {
+			POST("/courses/enrollment")
+			Response(StatusOK)
+			Response("not_authorized", StatusForbidden)
+			Response("bad_request", StatusBadRequest)
+			Response("internal_server_error", StatusInternalServerError)
+		})
+	})
+
+	Method("GetEnrollmentInCourses", func() {
+		Description("Get the enrollment status of a student in courses")
+
+		Payload(func() {
+			Attribute("studentId", Int32, "ID of the student to get enrollment status for", func() {
+				Example(1)
+			})
+			Required("studentId")
+		})
+
+		Result(ArrayOf(types.EnrollmentInCoursesResult))
+
+		HTTP(func() {
+			GET("/courses/enrollment/{studentId}")
+			Param("studentId", Int32, "ID of the student")
+			Response(StatusOK)
+			Response("not_authorized", StatusForbidden)
+			Response("bad_request", StatusBadRequest)
+			Response("internal_server_error", StatusInternalServerError)
+		})
+	})
 })
