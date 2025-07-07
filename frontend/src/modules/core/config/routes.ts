@@ -1,7 +1,6 @@
 import {
   CalendarClockIcon,
   FileSpreadsheet,
-  GraduationCapIcon,
   House,
   LibraryBigIcon,
 } from '@lucide/astro';

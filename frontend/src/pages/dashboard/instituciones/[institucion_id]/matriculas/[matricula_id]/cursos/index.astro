@@ -1,6 +1,8 @@
 ---
 import { authService } from '@/modules/auth/core/services/auth';
+import { capitalize } from '@/modules/core/lib/utils';
 import Button from '@/modules/core/ui/button.astro';
+import CoursesList from '@/modules/dashboard/instituciones/matriculas/core/components/CoursesList';
 import EnrollmentDashboardLayout from '@/modules/dashboard/instituciones/matriculas/core/layouts/EnrollmentDashboardLayout.astro';
 import { processService } from '@/modules/dashboard/instituciones/matriculas/core/services/process';
 import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
@@ -20,6 +22,6 @@ if (processError || !process) {
   return Astro.redirect(LANDING_ROUTE.fullPath);
 }
 ---
-<EnrollmentDashboardLayout user={user} process={process} title="Cursos">
-  <h1>Cursos</h1>
+<EnrollmentDashboardLayout user={user} process={process} title={`Matrículas ${capitalize(process.name) || 'desconocida'}`}>
+  <CoursesList client:load courses={process.courses}/>
 </EnrollmentDashboardLayout>

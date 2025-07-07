@@ -23,6 +23,10 @@ type Props = AuthRequired<User> & {
 const { user, currentRoute, process } = Astro.props;
 
 const dashboardRoute = DASHBOARD_ENROLLMENT_ROUTE;
+const basePath = getEnrollmentProcessPath({
+  institucion_id: process.institutionId,
+  matricula_id: process.id
+});
 ---
 <aside class="flex-initial basis-54 px-2 py-6 sticky top-0 h-full bg-background gap-6 flex flex-col items-center justify-between overflow-y-auto border-2 rounded-l-xl shadow-sm">
   <div class="flex flex-col items-center gap-4 w-full">
@@ -35,10 +39,7 @@ const dashboardRoute = DASHBOARD_ENROLLMENT_ROUTE;
         variant={dashboardRoute.name === currentRoute.name ? 'accent' : 'ghost'}
         size="lg"
         class="w-full justify-start text-left"
-        href={dashboardRoute.name === currentRoute.name ? undefined: getEnrollmentProcessPath({
-          institucion_id: process.institutionId,
-          matricula_id: process.id
-        })}
+        href={dashboardRoute.name === currentRoute.name ? undefined: basePath}
       >
         <HomeIcon />
         <span>Panel</span>
@@ -50,10 +51,7 @@ const dashboardRoute = DASHBOARD_ENROLLMENT_ROUTE;
             variant={option.name === currentRoute.name ? 'accent' : 'ghost'}
             size="lg"
             class="w-full justify-start text-left"
-            href={option.name === currentRoute.name ? undefined : `${getEnrollmentProcessPath({
-              institucion_id: process.institutionId,
-              matricula_id: process.id
-            })}/${option.path}`}
+            href={option.name === currentRoute.name ? undefined : `${basePath}/${option.path}`}
           >
             {option.icon && <option.icon class="w-5 h-5" />}
             <span>{capitalize(option.path || '')}</span>
