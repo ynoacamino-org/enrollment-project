@@ -3,13 +3,13 @@ import { sleep, check } from 'k6';
 
 export const options = {
   stages: [
-    { duration: '10s', target: 10 },
-    { duration: '20s', target: 10 },
-    { duration: '5s', target: 0 }
+    { duration: '10s', target: 1000 },
+    { duration: '20s', target: 5000 },
+    { duration: '5s', target: 500 }
   ]
 };
 
-const SESSION_TOKEN = "TG63mZ6k3Jz0P-ToLb62YvGwFeHK4Z6HQZQRl1M2Hss=";
+const SESSION_TOKEN = "-_OURbiHpF6Zj6cCQ2TX1DNrfi1gC-ph92j5FIW-GWA=";
 const COOKIE = {
   cookies: {
     session_token: {
