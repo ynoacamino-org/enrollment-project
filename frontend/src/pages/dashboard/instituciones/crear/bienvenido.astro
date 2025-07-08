@@ -1,0 +1,24 @@
+---
+import SimplePagelayout from '@/modules/core/layouts/SimplePageLayout.astro';
+import { getRouteFromPath } from '@/modules/core/lib/routes';
+import H1 from '@/modules/core/ui/H1.astro';
+import H2 from '@/modules/core/ui/H2.astro';
+import LogoExtended from '@/modules/core/ui/LogoExtended.astro';
+import Button from '@/modules/core/ui/button.astro';
+
+const route = getRouteFromPath(Astro.url.pathname);
+---
+<SimplePagelayout route={route}>
+  <LogoExtended size="xl" />
+  <header class="flex flex-col gap-y-6">
+    <H1>
+      Termina el registro de tu institución
+    </H1>
+    <H2>
+      Por favor sigue los pasos para completar el registro.
+    </H2>
+  </header>
+  <Button as="a" href="/institucion/registro/nombre">
+    ¡Empezar!
+  </Button>
+</SimplePagelayout>

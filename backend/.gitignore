@@ -1,4 +1,6 @@
 .env
-main
+
 build
 */**/*.db*
+backend/gen/*
+gen/

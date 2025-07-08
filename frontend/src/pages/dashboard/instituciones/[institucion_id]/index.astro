@@ -1,0 +1,9 @@
+---
+import { DASHBOARD_ROUTE } from '@/modules/dashboard/core/lib/routes';
+
+const { institution_id } = Astro.params;
+if (!institution_id) {
+  return Astro.redirect(DASHBOARD_ROUTE.fullPath);
+}
+return Astro.redirect(Astro.url.pathname + '/matriculas');
+---

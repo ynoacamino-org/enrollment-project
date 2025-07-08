@@ -1,0 +1,10 @@
+---
+import { cn } from '@/modules/core/lib/utils';
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'section'>;
+const { class: className, ...rest } = Astro.props;
+---
+<section class:list={cn('flex flex-col items-center gap-y-5 my-6 md:my-8 max-7xl w-full', className)} {...rest}>
+  <slot />
+</section>

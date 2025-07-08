@@ -1,0 +1,11 @@
+---
+import ErrorLayout from '@/modules/core/layouts/ErrorLayout.astro';
+import { NOT_FOUND_ERROR } from '@/modules/core/lib/errors';
+import { NOT_FOUND_ROUTE } from '@/modules/core/lib/routes';
+
+export const prerender = true;
+
+const route = NOT_FOUND_ROUTE;
+const error = NOT_FOUND_ERROR;
+---
+<ErrorLayout route={route} {...error} />

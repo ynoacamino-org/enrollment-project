@@ -1,0 +1,32 @@
+---
+import GridPageLayout from '@/modules/core/layouts/GridPageLayout.astro';
+import { getRouteFromPath } from '@/modules/core/lib/routes';
+import H1 from '@/modules/core/ui/H1.astro';
+import H2 from '@/modules/core/ui/H2.astro';
+import LogoExtended from '@/modules/core/ui/LogoExtended.astro';
+import Button from '@/modules/core/ui/button.astro';
+const route = getRouteFromPath(Astro.url.pathname);
+---
+<GridPageLayout route={route}>
+  <LogoExtended class="col-span-2 self-end justify-self-center row-auto" size="xl" />
+  <div class="flex flex-col gap-4">
+    <H1>Estás a un paso de iniciar tu proceso de matrícula</H1>
+    <H2>
+      Antes de continuar, por favor confirma que deseas iniciar el proceso de matrícula y que requieres información sobre el pago a realizar.
+    </H2>
+    <div>
+      Al continuar aceptas que:
+      <ul class="list-inside list-disc">
+        <li>
+          Deseas iniciar un proceso de matrícula
+        </li>
+        <li>
+          Requieres información sobre el pago a realizar
+        </li>
+      </ul>
+    </div>
+  </div>
+  <Button class="place-self-center" as="a" href="/matricula/admin/proceso/subir-datos">
+    Aceptar y continuar
+  </Button>
+</GridPageLayout>

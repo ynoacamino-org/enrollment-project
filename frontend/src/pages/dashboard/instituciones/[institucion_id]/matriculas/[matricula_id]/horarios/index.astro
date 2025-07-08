@@ -1,0 +1,24 @@
+---
+import { authService } from '@/modules/auth/core/services/auth';
+import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
+import EnrollmentDashboardLayout from '@/modules/dashboard/instituciones/matriculas/core/layouts/EnrollmentDashboardLayout.astro';
+import { processService } from '@/modules/dashboard/instituciones/matriculas/core/services/process';
+
+const { data: user, error } = await authService.getUser(Astro.cookies);
+
+if (error) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+const { matricula_id } = Astro.params;
+if (!matricula_id) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+
+const {data: process, error: processError} = await processService.getProcessById(matricula_id, Astro.cookies);
+if (processError || !process) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+---
+<EnrollmentDashboardLayout user={user} process={process} title="Horarios">
+  <h1>Horarios</h1>
+</EnrollmentDashboardLayout>

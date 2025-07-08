@@ -1,0 +1,20 @@
+---
+import type { Polymorphic } from 'astro/types';
+import { type VariantProps } from 'tailwind-variants';
+import type { SupportedTags } from '@/modules/core/types/button';
+import { buttonVariants } from '@/modules/core/lib/button';
+import { cn } from '@/modules/core/lib/utils';
+
+type Props<Tag extends SupportedTags> = Polymorphic<{ as: Tag } & VariantProps<typeof buttonVariants>>;
+
+const { as: Tag = 'button', class: className, variant, size, ...rest } = Astro.props;
+---
+<Tag
+  class:list={cn(
+    buttonVariants({ variant, size }),
+    className,
+  )}
+  {...rest}
+>
+  <slot />
+</Tag>

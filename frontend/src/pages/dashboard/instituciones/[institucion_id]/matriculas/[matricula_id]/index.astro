@@ -1,0 +1,44 @@
+---
+import { authService } from '@/modules/auth/core/services/auth';
+import EnrollmentDashboardLayout from '@/modules/dashboard/instituciones/matriculas/core/layouts/EnrollmentDashboardLayout.astro';
+import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
+import { processService } from '@/modules/dashboard/instituciones/matriculas/core/services/process';
+import { capitalize } from '@/modules/core/lib/utils';
+import CoursesList from '@/modules/dashboard/instituciones/matriculas/core/components/CoursesList';
+import DashboardNavigationCards from '@/modules/dashboard/instituciones/matriculas/core/components/DashboardNavigationCards';
+
+const { data: user, error } = await authService.getUser(Astro.cookies);
+if (!user || error) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+const { institucion_id } = Astro.params;
+
+if (!institucion_id) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+
+const { matricula_id } = Astro.params;
+if (!matricula_id) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+
+const {data: process, error: processError} = await processService.getProcessById(matricula_id, Astro.cookies);
+if (processError || !process) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+---
+
+<EnrollmentDashboardLayout user={user} process={process} title="¡Bienvenido!">
+  <div class="space-y-6">
+    <div class="text-center">
+      <p class="text-lg text-gray-600 mb-8">
+        Selecciona una opción y monitorea el progreso de tu matrícula <strong>{capitalize(process.name) || 'desconocida'}</strong>.
+      </p>
+    </div>
+    <DashboardNavigationCards
+      institutionId={institucion_id}
+      matriculaId={matricula_id}
+      client:load
+    />
+  </div>
+</EnrollmentDashboardLayout>

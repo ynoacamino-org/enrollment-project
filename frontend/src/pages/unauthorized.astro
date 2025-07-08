@@ -1,0 +1,11 @@
+---
+import ErrorLayout from '@/modules/core/layouts/ErrorLayout.astro';
+import { UNAUTHORIZED_ERROR } from '@/modules/core/lib/errors';
+import { UNAUTHORIZED_ROUTE } from '@/modules/core/lib/routes';
+
+export const prerender = true;
+
+const route = UNAUTHORIZED_ROUTE;
+const error = UNAUTHORIZED_ERROR;
+---
+<ErrorLayout route={route} {...error} />

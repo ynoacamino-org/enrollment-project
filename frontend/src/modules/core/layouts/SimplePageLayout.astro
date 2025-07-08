@@ -1,13 +1,13 @@
 ---
-import Layout from '@/modules/core/layouts/Layout.astro';
-type Props = {
-  title: string;
-};
+import type { RootLayoutProps } from '@/modules/core/types/layouts';
+import RootLayout from '@/modules/core/layouts/RootLayout.astro';
 
-const { title } = Astro.props;
+type Props = RootLayoutProps;
+
+const { route } = Astro.props;
 ---
-<Layout title={title}>
+<RootLayout route={route}>
   <div class="flex flex-col min-h-screen items-center justify-center gap-y-10 md:gap-y-16 px-4 md:px-8">
     <slot />
   </div>
-</Layout>
+</RootLayout>

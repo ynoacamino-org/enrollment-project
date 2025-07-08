@@ -1,0 +1,26 @@
+---
+import SimplePageLayout from '@/modules/core/layouts/SimplePageLayout.astro';
+import { getRouteFromPath } from '@/modules/core/lib/routes';
+import H1 from '@/modules/core/ui/H1.astro';
+import H2 from '@/modules/core/ui/H2.astro';
+import LogoExtended from '@/modules/core/ui/LogoExtended.astro';
+
+const route = getRouteFromPath(Astro.url.pathname);
+---
+<SimplePageLayout route={route}>
+  <LogoExtended size="xl" />
+  <header class="flex flex-col gap-y-6">
+    <H1>
+      ¿Con qué nombre conocerán tu institución?
+    </H1>
+    <H2>
+      Todos los usuarios de la plataforma verán el nombre que elijas.
+    </H2>
+  </header>
+  <!-- <form class="flex flex-col gap-y-4 w-full max-w-md items-center">
+    <Input class="w-full" placeholder="Introduce aquí el nombre" />
+    <Button>
+      Finalizar
+    </Button>
+  </form> -->
+</SimplePageLayout>

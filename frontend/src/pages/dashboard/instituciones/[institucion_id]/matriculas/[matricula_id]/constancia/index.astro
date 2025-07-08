@@ -1,0 +1,31 @@
+---
+import { authService } from '@/modules/auth/core/services/auth';
+import Button from '@/modules/core/ui/button.astro';
+import EnrollmentDashboardLayout from '@/modules/dashboard/instituciones/matriculas/core/layouts/EnrollmentDashboardLayout.astro';
+import { processService } from '@/modules/dashboard/instituciones/matriculas/core/services/process';
+import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
+import {ViewAndDownloadPDF} from '@/modules/dashboard/instituciones/constancia/core/components/PDF';
+
+const { data: user, error } = await authService.getUser(Astro.cookies);
+
+if (error) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+const { matricula_id } = Astro.params;
+if (!matricula_id) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+
+const {data: process, error: processError} = await processService.getProcessById(matricula_id, Astro.cookies);
+if (processError || !process) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+---
+<EnrollmentDashboardLayout user={user} process={process} title="Constancia de matrícula">
+  <div class="flex flex-col items-center justify-center max-w-6xl h-full">
+    <p class="text-center text-lg mb-4">
+      Tu contrato de matrícula está listo para ser descargado. Haz clic en el botón a continuación para obtener una copia.
+    </p>
+    <ViewAndDownloadPDF user={user} client:only="react" />
+  </div>
+</EnrollmentDashboardLayout>

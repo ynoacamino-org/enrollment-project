@@ -1,23 +1,37 @@
--- name: EnrollmentStudentCourse :exec
-INSERT INTO student_course (student_id, course_id, attemps, passed)
-VALUES ($1, $2, 1, $3);
+-- name: CreateStudent :exec
+INSERT INTO student (
+    code, account_id
+) VALUES (
+    $1, $2
+);
 
--- name: UpdateEnrollmentStudentCourse :exec
-UPDATE student_course
-SET attemps = attemps + 1,
-    passed = $3
-WHERE student_id = $1 AND course_id = $2;
-
--- name: GetEnrolledUsersByCourse :many
+-- name: ListStudents :many
 SELECT
+    s.id,
+    s.code,
+    a.email,
     a.name,
-    a.surname,
-    a.email
-FROM student_course sc
-JOIN student s ON sc.student_id = s.id
+    a.surname
+FROM student s
 JOIN account a ON s.account_id = a.id
-WHERE sc.course_id = $1;
+ORDER BY a.surname, a.name
+LIMIT $1
+OFFSET $2;
 
--- name: DeleteStudentCourse :exec
-DELETE FROM student_course
-WHERE student_id = $1 AND course_id = $2;
+-- name: FullListStudents :many
+SELECT
+    s.id,
+    s.code,
+    a.email,
+    a.name,
+    a.surname
+FROM student s
+JOIN account a ON s.account_id = a.id
+ORDER BY a.surname, a.name;
+
+-- name: GetStudentIdByToken :one
+SELECT s.id
+FROM student s
+JOIN account a ON s.account_id = a.id
+JOIN account_session ase ON a.id = ase.account_id
+WHERE ase.token = $1;

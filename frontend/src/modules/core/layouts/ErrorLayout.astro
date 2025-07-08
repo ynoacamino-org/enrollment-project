@@ -1,0 +1,25 @@
+---
+import RootLayout from '@/modules/core/layouts/RootLayout.astro';
+import { type RootLayoutProps } from '@/modules/core/types/layouts';
+import type { ErrorResponse } from '@/modules/core/types/error';
+import { LogoExtended } from '@/modules/core/ui/logoExtended';
+import  H2 from '@/modules/core/ui/H2.astro';
+import { Link } from '@/modules/core/ui/link';
+import H1 from '@/modules/core/ui/H1.astro';
+import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
+
+type Props = RootLayoutProps & ErrorResponse;
+
+const { route, status, message} = Astro.props;
+---
+<RootLayout route={route}>
+  <main class="min-h-screen flex flex-col items-center justify-center text-center gap-6">
+    <H1 class="text-6xl">{status}</H1>
+    <LogoExtended size="xl" />
+    <H2>{message}</H2>
+    <div class="flex flex-col gap-2">
+      <p class="text-gray-500">Por favor, contacta a soporta si el problema persiste.</p>
+    </div>
+    <Link href={LANDING_ROUTE.fullPath} variant="link">Volver a la página principal</Link>
+  </main>
+</RootLayout>

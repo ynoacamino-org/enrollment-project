@@ -1,0 +1,33 @@
+---
+import Button from '@/modules/core/ui/button.astro';
+import { LogOutIcon } from '@lucide/astro';
+
+type Props = {
+  class?: string;
+};
+
+const { class: className } = Astro.props;
+---
+<Button variant="outline" id="logout-button" class={className}>
+  <LogOutIcon />
+  Cerrar sesión
+</Button>
+<script>
+import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
+import { actions } from 'astro:actions';
+import { navigate } from 'astro:transitions/client';
+
+const logoutButton = document.getElementById('logout-button');
+logoutButton?.addEventListener('click', async () => {
+  const { error } = await actions.user.logout();
+  if (error) {
+    console.error('Logout failed:', error);
+  } else {
+    console.log(
+      'Session has been closed, redirect to: ',
+      LANDING_ROUTE.fullPath,
+    );
+    await navigate(LANDING_ROUTE.fullPath);
+  }
+});
+</script>

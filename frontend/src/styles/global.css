@@ -1,8 +1,174 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-@theme {
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a202c;
+  --card: #ffffff;
+  --card-foreground: #1a202c;
+  --popover: #ffffff;
+  --popover-foreground: #1a202c;
+  --primary: #0865c2;
+  --primary-foreground: #ffffff;
+  --secondary: #e2e8f0;
+  --secondary-foreground: #1a202c;
+  --muted: #e3eeff;
+  --muted-foreground: #718096;
+  --accent: #d1e0f4;
+  --accent-foreground: #1a202c;
+  --destructive: #f56565;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #60a5fa;
+  --chart-1: #60a5fa;
+  --chart-2: #ed8936;
+  --chart-3: #38a169;
+  --chart-4: #9f7aea;
+  --chart-5: #f56565;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a202c;
+  --sidebar-primary: #60a5fa;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e2e8f0;
+  --sidebar-accent-foreground: #1a202c;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #60a5fa;
+  --radius: 0.5rem;
+  --shadow-2xs: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.05);
+  --shadow-xs: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.05);
+  --shadow-sm: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10), 0 1px 2px -1px hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10);
+  --shadow: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10), 0 1px 2px -1px hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10);
+  --shadow-md: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10), 0 2px 4px -1px hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10);
+  --shadow-lg: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10), 0 4px 6px -1px hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10);
+  --shadow-xl: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10), 0 8px 10px -1px hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10);
+  --shadow-2xl: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.25);
+  --tracking-normal: 0.025em;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #ffffff;
+  --card: #1a202c;
+  --card-foreground: #ffffff;
+  --popover: #1a202c;
+  --popover-foreground: #ffffff;
+  --primary: #60a5fa;
+  --primary-foreground: #ffffff;
+  --secondary: #2d3748;
+  --secondary-foreground: #ffffff;
+  --muted: #4a5568;
+  --muted-foreground: #718096;
+  --accent: #60a5fa;
+  --accent-foreground: #ffffff;
+  --destructive: #f56565;
+  --destructive-foreground: #ffffff;
+  --border: #2d3748;
+  --input: #2d3748;
+  --ring: #60a5fa;
+  --chart-1: #60a5fa;
+  --chart-2: #ed8936;
+  --chart-3: #38a169;
+  --chart-4: #9f7aea;
+  --chart-5: #f56565;
+  --sidebar: #1a202c;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #60a5fa;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #2d3748;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #2d3748;
+  --sidebar-ring: #60a5fa;
+  --font-sans: sans-serif;
+  --font-serif: serif;
+  --font-mono: monospace;
+  --radius: 0.5rem;
+  --shadow-2xs: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.05);
+  --shadow-xs: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.05);
+  --shadow-sm: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10), 0 1px 2px -1px hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10);
+  --shadow: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10), 0 1px 2px -1px hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10);
+  --shadow-md: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10), 0 2px 4px -1px hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10);
+  --shadow-lg: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10), 0 4px 6px -1px hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10);
+  --shadow-xl: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10), 0 8px 10px -1px hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.10);
+  --shadow-2xl: 0 0 25px 0 hsl(rgba(0, 0, 0, var(--shadow-opacity)) / 0.25);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+
+  --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
+  --tracking-tight: calc(var(--tracking-normal) - 0.025em);
+  --tracking-normal: var(--tracking-normal);
+  --tracking-wide: calc(var(--tracking-normal) + 0.025em);
+  --tracking-wider: calc(var(--tracking-normal) + 0.05em);
+  --tracking-widest: calc(var(--tracking-normal) + 0.1em);
   --animate-fade-in: fadeIn 0.3s ease-in-out;
   --animate-content-show: contentShow 0.3s ease-in-out;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+body {
+  letter-spacing: var(--tracking-normal);
+  color-scheme: light dark;
 }
 
 @keyframes fadeIn {

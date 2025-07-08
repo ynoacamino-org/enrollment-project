@@ -1,0 +1,1159 @@
+{
+  "/auth/{provider}/login": {
+    "get": {
+      "summary": "Login with OAuth provider",
+      "description": "Redirects to the OAuth provider for authentication.",
+      "parameters": [
+        {
+          "name": "provider",
+          "in": "path",
+          "required": true,
+          "description": "The OAuth provider to use for login (e.g., google, github).",
+          "type": "string"
+        }
+      ],
+      "responses": {
+        "302": {
+          "description": "Redirects to the OAuth provider's login page.",
+          "content": {
+            "cookies": {
+              "comment": "Como resultado de hacer esta petición, se debe configurar las cookies",
+              "session": {
+                "type": "string",
+                "description": "Session cookie for the authenticated user."
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request if the provider is not supported.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Bad request"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/auth/logout": {
+    "post": {
+      "summary": "Logout user",
+      "description": "Logs out the authenticated user and clears the session.",
+      "responses": {
+        "200": {
+          "description": "User logged out successfully.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Confirmation message indicating successful logout."
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/me": {
+    "get": {
+      "summary": "Get current user information",
+      "description": "Returns the authenticated user's information.",
+      "responses": {
+        "200": {
+          "description": "User information retrieved successfully.",
+          "content": {
+            "cookies": {
+              "session": {
+                "type": "string",
+                "description": "Session cookie for the authenticated user."
+              }
+            },
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "user": "UserSchema",
+                "firstLogin": {
+                  "type": "boolean",
+                  "description": "Indicates if this is the user's first login."
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/institutions": {
+    "get": {
+      "summary": "Get user's institutions",
+      "description": "Returns a list of institutions associated with the authenticated user. , Information must be divided by the user role in the institutions, admin or student",
+      "responses": {
+        "200": {
+          "description": "Institutions retrieved successfully.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "admin": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": "InstitutionSchema"
+                    }
+                  }
+                },
+                "student": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": "InstitutionSchema"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+            "description": "Unauthorized if the user is not authenticated.",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "properties": {
+                  "error": {
+                    "type": "string",
+                    "description": "Error message indicating the user is not authenticated."
+                  }
+                }
+              }
+            }
+        }
+      }
+    }
+  },
+  "/institutions/request": {
+    "post": {
+      "summary": "Send email to developer to create institution",
+      "description": "Requests the creation of a new institution by sending an email to the developer.",
+      "responses": {
+        "200": {
+          "description": "Email sent successfully.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Confirmation message indicating the email was sent."
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/institutions/{institution_id}": {
+    "get": {
+      "summary": "Get institution information",
+      "description": "Returns detailed information about a specific institution considering the role of the autheticated user.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution to retrieve information for."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Institution information retrieved successfully.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "institution": {
+                  "$ref": "#/components/schemas/InstitutionSchema"
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/institutions/{institution_id}/enrollments": {
+    "get": {
+      "summary": "Get current information about all enrollment processes",
+      "description": "Information about the current state for every enrollment process",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to retrieve enrollment information."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Enrollment information retrieved successfully.",
+          "content": {
+            "application/json": {
+              "type": "array",
+              "items": {
+                "type": "EnrollmentSchema"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "summary": "Create a new enrollment process",
+      "description": "Creates a new enrollment process for the specified institution. Only administrator can do this.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to create the enrollment process."
+        }
+      ],
+      "responses": {
+        "201": {
+          "description": "Enrollment process created successfully.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Confirmation message indicating the enrollment process was created."
+                },
+                "enrollmentId": {
+                  "type": "string",
+                  "description": "The ID of the newly created enrollment process."
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated. User is not an administrator.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/institutions/{institution_id}/enrollments/{enrollment_id}": {
+    "get": {
+      "summary": "Get specific enrollment process information",
+      "description": "Returns detailed information about a specific enrollment process.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to retrieve enrollment information."
+        },
+        {
+          "name": "enrollment_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the enrollment process to retrieve information for."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Enrollment process information retrieved successfully.",
+          "content": {
+            "application/json": {
+              "$ref": "#/components/schemas/EnrollmentSchema"
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution or enrollment does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution or enrollment was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "put": {
+      "summary": "Update an enrollment process",
+      "description": "Updates the specified enrollment process. Only administrators can do this.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to update the enrollment process."
+        },
+        {
+          "name": "enrollment_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the enrollment process to update."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Enrollment process updated successfully.",
+          "content": {
+            "application/json": {
+              "$ref": "#/components/schemas/EnrollmentSchema"
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated or not an administrator.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated or not authorized."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution or enrollment does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution or enrollment was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/institutions/{institution_id}/enrollments/{enrollment_id}/certificate": {
+    "get": {
+      "summary": "Get enrollment report for each student",
+      "description": "Returns a report of the enrollment process for each student, including their status and courses in pdf format.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to retrieve the enrollment report."
+        },
+        {
+          "name": "enrollment_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the enrollment process for which to retrieve the report."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Enrollment report retrieved successfully.",
+          "content": {
+            "application/pdf": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              },
+              "example": "base64-encoded-pdf-content"
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated or not an administrator.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated or not authorized."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution or enrollment does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution or enrollment was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/institutions/{institution_id}/enrollments/{enrollment_id}/courses": {
+    "get": {
+      "summary": "Get courses available in an enrollment process",
+      "description": "Returns a list of courses available in the specified enrollment process.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to retrieve course information."
+        },
+        {
+          "name": "enrollment_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the enrollment process for which to retrieve course information."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Courses retrieved successfully.",
+          "content": {
+            "application/json": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CourseSchema"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution or enrollment does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution or enrollment was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "summary": "Add a course to an enrollment process",
+      "description": "Adds a new course to the specified enrollment process. Only administrators can do this.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to add the course."
+        },
+        {
+          "name": "enrollment_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the enrollment process to which the course will be added."
+        }
+      ],
+      "responses": {
+        "201": {
+          "description": "Course added successfully.",
+          "content": {
+            "application/json": {
+              "$ref": "#/components/schemas/CourseSchema"
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated or not an administrator.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated or not authorized."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution or enrollment does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution or enrollment was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/institutions/{institution_id}/enrollments/{enrollment_id}/courses/{course_id}": {
+    "get": {
+      "summary": "Get specific course information in an enrollment process",
+      "description": "Returns detailed information about a specific course in the specified enrollment process.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to retrieve course information."
+        },
+        {
+          "name": "enrollment_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the enrollment process for which to retrieve course information."
+        },
+        {
+          "name": "course_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the course to retrieve information for."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Course information retrieved successfully.",
+          "content": {
+            "application/json": {
+              "$ref": "#/components/schemas/CourseSchema"
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution, enrollment, or course does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution, enrollment, or course was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "put": {
+      "summary": "Update a course in an enrollment process",
+      "description": "Updates the specified course in the specified enrollment process. Only administrators can do this.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to update the course."
+        },
+        {
+          "name": "enrollment_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the enrollment process in which to update the course."
+        },
+        {
+          "name": "course_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the course to update."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Course updated successfully.",
+          "content": {
+            "application/json": {
+              "$ref": "#/components/schemas/CourseSchema"
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated or not an administrator.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated or not authorized."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution, enrollment, or course does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution, enrollment, or course was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "delete": {
+      "summary": "Delete a course from an enrollment process",
+      "description": "Deletes the specified course from the specified enrollment process. Only administrators can do this.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution from which to delete the course."
+        },
+        {
+          "name": "enrollment_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the enrollment process from which to delete the course."
+        },
+        {
+          "name": "course_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the course to delete."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Course deleted successfully.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Confirmation message indicating the course was deleted."
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated or not an administrator.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated or not authorized."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution, enrollment, or course does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution, enrollment, or course was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  "/institutions/{institution_id}/students": {
+    "get": {
+      "summary": "Get students enrolled in an institution. Only accesed by administrators",
+      "description": "Returns a list of students enrolled in the specified institution.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to retrieve student information."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Students retrieved successfully.",
+          "content": {
+            "application/json": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/UserSchema"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "summary": "Enroll a user in an institution",
+      "description": "Enrolls a user in the specified institution. Only administrators can do this.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution to enroll the user in."
+        }
+      ],
+      "responses": {
+        "201": {
+          "description": "User enrolled successfully.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Confirmation message indicating the user was enrolled."
+                },
+                "userId": {
+                  "type": "string",
+                  "description": "The ID of the newly enrolled user."
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated or not an administrator.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated or not authorized."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/institutions/{institution_id}/students/{student_id}": {
+    "get": {
+      "summary": "Get a user's enrollment information in an institution",
+      "description": "Returns detailed information about a specific user's enrollment in the specified institution.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to retrieve user enrollment information."
+        },
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the user whose enrollment information is to be retrieved."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "User's enrollment information retrieved successfully.",
+          "content": {
+            "application/json": {
+              "$ref": "#/components/schemas/UserSchema"
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated or not an administrator.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated or not authorized."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution or user does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution or user was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "put": {
+      "summary": "Update a user's enrollment in an institution",
+      "description": "Updates the enrollment information for a user in the specified institution. Only administrators can do this.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution for which to update the user's enrollment."
+        },
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the user whose enrollment information is to be updated."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "User's enrollment updated successfully.",
+          "content": {
+            "application/json": {
+              "$ref": "#/components/schemas/UserSchema"
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated or not an administrator.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated or not authorized."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution or user does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution or user was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "delete": {
+      "summary": "Unenroll a user from an institution",
+      "description": "Unenrolls a user from the specified institution. Only administrators can do this.",
+      "parameters": [
+        {
+          "name": "institution_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the institution to unenroll the user from."
+        },
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the user to unenroll."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "User unenrolled successfully.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Confirmation message indicating the user was unenrolled."
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized if the user is not authenticated or not an administrator.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the user is not authenticated or not authorized."
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Not Found if the institution or user does not exist.",
+          "content": {
+            "application/json": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message indicating the institution or user was not found."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

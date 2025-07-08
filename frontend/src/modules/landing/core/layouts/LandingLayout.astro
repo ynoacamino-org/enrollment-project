@@ -1,0 +1,13 @@
+---
+import RootLayout from '@/modules/core/layouts/RootLayout.astro';
+import NavBar from '@/modules/landing/core/layouts/NavBar.astro';
+import Footer from '@/modules/landing/core/layouts/Footer.astro';
+import { LANDING_ROUTE } from '../lib/routes';
+---
+<RootLayout route={LANDING_ROUTE}>
+  <NavBar />
+  <main class="mx-auto max-w-7xl flex flex-col items-center px-2 sm:px-4 md:px-8">
+    <slot />
+  </main>
+  <Footer />
+</RootLayout>

@@ -1,0 +1,10 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { cn } from '@/modules/core/lib/utils';
+
+type Props = HTMLAttributes<'h2'>;
+const { class: className, ...rest } = Astro.props;
+---
+<h2 class:list={cn('sm:text-md md:text-xl text-pretty', className)} {...rest}>
+  <slot />
+</h2>

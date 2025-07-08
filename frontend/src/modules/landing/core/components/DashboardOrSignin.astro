@@ -1,0 +1,13 @@
+---
+import SignInModal from '@/modules/auth/core/components/SignInModal';
+import { authService } from '@/modules/auth/core/services/auth';
+import Button from '@/modules/core/ui/button.astro';
+import { DASHBOARD_ROUTE } from '@/modules/dashboard/core/lib/routes';
+
+const { data: user } = await authService.getUser(Astro.cookies);
+---
+{user ? (
+<Button as="a" href={DASHBOARD_ROUTE.fullPath}>Panel</Button>
+) : (
+  <SignInModal client:load />
+)}

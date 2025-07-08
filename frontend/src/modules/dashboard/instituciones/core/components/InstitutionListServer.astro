@@ -1,0 +1,13 @@
+---
+import { institutionService } from '@/modules/dashboard/instituciones/core/services/institution';
+import { InstitutionList } from '@/modules/dashboard/instituciones/core/components/InstitutionList';
+
+const { data: institutions, error } = await institutionService.getInstitutions(Astro.cookies);
+---
+  {
+  institutions && !error ? (
+  <InstitutionList institutions={institutions} client:load />
+  ) : (
+  <h2 class="text-2xl font-bold mb-4 text-red-400">Error loading institutions</h2>
+  )
+  }

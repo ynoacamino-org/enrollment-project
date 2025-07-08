@@ -1,0 +1,34 @@
+---
+import { authService } from '@/modules/auth/core/services/auth';
+import { capitalize } from '@/modules/core/lib/utils';
+import Button from '@/modules/core/ui/button.astro';
+import CoursesList from '@/modules/dashboard/instituciones/matriculas/core/components/CoursesList';
+import EnrollmentDashboardLayout from '@/modules/dashboard/instituciones/matriculas/core/layouts/EnrollmentDashboardLayout.astro';
+import { coursesService } from '@/modules/dashboard/instituciones/matriculas/core/services/courses';
+import { processService } from '@/modules/dashboard/instituciones/matriculas/core/services/process';
+import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
+
+const { data: user, error } = await authService.getUser(Astro.cookies);
+
+if (error) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+const { matricula_id } = Astro.params;
+if (!matricula_id) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+
+const {data: process, error: processError} = await processService.getProcessById(matricula_id, Astro.cookies);
+if (processError || !process) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+
+const { data: enrollmentedSections, error: enrollmentedSectionsError } = await coursesService.getEnrollmentedSections(Astro.cookies);
+if (enrollmentedSectionsError) {
+  console.error('Error fetching enrollmented sections:', enrollmentedSectionsError);
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+---
+<EnrollmentDashboardLayout user={user} process={process} title={`Matrículas ${capitalize(process.name) || 'desconocida'}`}>
+  <CoursesList client:load courses={process.courses} enrollmentedSections={enrollmentedSections} />
+</EnrollmentDashboardLayout>

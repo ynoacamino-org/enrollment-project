@@ -1,0 +1,39 @@
+---
+import LogoutButton from '@/modules/auth/core/components/LogoutButton.astro';
+import type { AuthRequired, User } from '@/modules/auth/core/types/user';
+import RootLayout from '@/modules/core/layouts/RootLayout.astro';
+import { getRouteFromPath } from '@/modules/core/lib/routes';
+import Button from '@/modules/core/ui/button.astro';
+import DashboardNavBar from '@/modules/dashboard/core/layouts/DashboardNavBar.astro';
+
+// Por ahora solo se requerira un usuario autenticado, ya que el usuario en la base de datos no tiene un rol como campo
+// Puede comportarse como un administrador o un usuario normal, dependiendo de la institucion a la que pertenezca
+type Props = AuthRequired<User>;
+
+const { user } = Astro.props;
+
+const route = getRouteFromPath(Astro.url.pathname);
+---
+<RootLayout route={route} class="flex flex-col min-h-screen items-center justify-center">
+  <DashboardNavBar />
+  <main class="flex flex-col flex-1 overflow-y-auto">
+    <slot />
+  </main>
+  <div class="min-h-12 flex flex-col items-center gap-4 w-full mb-4">
+    <div class="flex flex-col items-center gap-2">
+      <Button class="size-15 rounded-full" variant="outline" size="icon">
+          <span class="sr-only">Personal photo</span>
+          <img
+            class="size-full object-cover rounded-full"
+            src={user.avatar_url}
+            alt="User profile"
+          />
+      </Button>
+      <div class="flex flex-col items-center">
+        <span class="font-medium">{user.name}</span>
+        <span class="text-sm text-muted-foreground">{user.email}</span>
+      </div>
+    </div>
+    <LogoutButton class="w-max" />
+  </div>
+</RootLayout>

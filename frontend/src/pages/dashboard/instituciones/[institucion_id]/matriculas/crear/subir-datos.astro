@@ -1,0 +1,28 @@
+---
+import GridPageLayout from '@/modules/core/layouts/GridPageLayout.astro';
+import { getRouteFromPath } from '@/modules/core/lib/routes';
+import H1 from '@/modules/core/ui/H1.astro';
+import H2 from '@/modules/core/ui/H2.astro';
+import LogoExtended from '@/modules/core/ui/LogoExtended.astro';
+import Button from '@/modules/core/ui/button.astro';
+
+const route = getRouteFromPath(Astro.url.pathname);
+---
+<GridPageLayout route={route}>
+  <LogoExtended class="col-span-2 self-end justify-self-center row-auto" size="xl" />
+  <div class="flex flex-col gap-4">
+    <H1>Tu proceso se ha iniciado</H1>
+    <H2>
+      Necesitamos los datos de los estudiantes y cursos. Por favor, descarga el formato, completálo y súbelo. Podrás modificar los datos en la aplicación luego.
+    </H2>
+  </div>
+
+  <div class="flex flex-col gap-y-4 place-self-center items-center">
+    <Button>
+      Descargar formato
+    </Button>
+    <Button as="a" href="/matricula/admin/proceso/listos">
+      Subir datos
+    </Button>
+  </div>
+</GridPageLayout>

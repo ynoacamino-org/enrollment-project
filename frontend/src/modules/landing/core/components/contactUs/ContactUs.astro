@@ -1,0 +1,12 @@
+---
+import Section from '@/modules/landing/core/ui/Section.astro';
+import SectionHeader from '@/modules/landing/core/ui/SectionHeader.astro';
+import { ContactForm } from '@/modules/landing/core/components/contactUs/ContactForm';
+---
+<Section class="pb-14 ">
+  <SectionHeader>
+    <span slot="title">¿Listo para simplificar tu proceso de matrícula?</span>
+    <span slot="subtitle">Contáctanos y descubre cómo podemos ayudarte</span>
+  </SectionHeader>
+  <ContactForm client:visible />
+</Section>

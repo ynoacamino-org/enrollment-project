@@ -20,11 +20,11 @@ CREATE TABLE account (
 
 CREATE TABLE account_session (
     id SERIAL PRIMARY KEY,
-    token TEXT,
-    expiration_date TIMESTAMPTZ,
-    user_agent TEXT,
-    ip_address TEXT,
-    account_id INTEGER,
+    token TEXT NOT NULL UNIQUE,
+    expiration_date TIMESTAMPTZ NOT NULL,
+    user_agent TEXT NOT NULL,
+    ip_address TEXT NOT NULL,
+    account_id INTEGER NOT NULL,
     FOREIGN KEY (account_id) REFERENCES account (id) ON DELETE CASCADE
 );
 

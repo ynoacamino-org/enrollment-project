@@ -1,0 +1,31 @@
+---
+import DashboardLayout from '@/modules/dashboard/core/layouts/DashboardLayout.astro';
+import { authService } from '@/modules/auth/core/services/auth';
+import { DASHBOARD_INSTITUTION_ROUTE } from '@/modules/dashboard/instituciones/core/lib/routes';
+import { institutionService } from '@/modules/dashboard/instituciones/core/services/institution';
+import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
+import { EnrollmentProcessList } from '@/modules/dashboard/instituciones/matriculas/core/components/EnrollmentProcessList';
+
+const { institucion_id } = Astro.params;
+
+if (!institucion_id) {
+  return Astro.redirect(DASHBOARD_INSTITUTION_ROUTE.fullPath);
+}
+
+const { data: user, error } = await authService.getUser(Astro.cookies);
+
+if (error) {
+  return Astro.redirect(LANDING_ROUTE.fullPath);
+}
+
+const { data: institution, error: institutionError } = await institutionService.getInstitutionByIdWithProcesses(institucion_id, Astro.cookies);
+
+if (institutionError) {
+  return Astro.redirect(DASHBOARD_INSTITUTION_ROUTE.fullPath);
+}
+---
+<DashboardLayout user={user}>
+  <div class="min-h-full flex-1 flex flex-col justify-between py-4 gap-2">
+    <EnrollmentProcessList institution={institution} client:only="react" />
+  </div>
+</DashboardLayout>

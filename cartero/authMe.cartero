@@ -1,0 +1,10 @@
+version = 1
+url = "http://localhost:8080/auth/me"
+method = "GET"
+
+[headers]
+Cookie = "session_token=j3I16gpX5K-UEOkJXQTSCiSlYOk4ZMCJuQJ235t_49c="
+
+[variables]
+
+[inactive-params]

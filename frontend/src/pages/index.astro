@@ -1,9 +1,11 @@
 ---
-import ContactUs from '@/modules/landing/components/contactUs/ContactUs.astro';
-import Hero from '@/modules/landing/components/hero/Hero.astro';
-import LandingLayout from '@/modules/landing/layouts/LandingLayout.astro';
+import ContactUs from '@/modules/landing/core/components/contactUs/ContactUs.astro';
+import Hero from '@/modules/landing/core/components/hero/Hero.astro';
+import LandingLayout from '@/modules/landing/core/layouts/LandingLayout.astro';
+
+export const prerender = true;
 ---
-<LandingLayout title="Matrículas Unsa">
+<LandingLayout>
   <Hero />
   <ContactUs />
 </LandingLayout>
