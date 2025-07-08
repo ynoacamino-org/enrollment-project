@@ -63,6 +63,7 @@ func NewMainConfig() (*MainConfig, error) {
 		dbg = false
 		log.Printf("Environment variable %s not found or invalid, using default value: %t\n", DBG, dbg)
 	}
+	log.Println("Debug mode:", dbg)
 
 	format := goaLog.FormatJSON
 	if goaLog.IsTerminal() {

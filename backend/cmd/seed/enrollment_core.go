@@ -128,7 +128,7 @@ func seedEnrollmentCoreTables(
 		log.Fatalf("Failed to list institutions: %v", err)
 	}
 	log.Println("Seeding processes...")
-	for range 20 {
+	for range 60 {
 		institution := institutions[rand.Intn(len(institutions))]
 		process := createRandomProcess(faker, institution)
 		err := processRepo.CreateProcess(ctx, process)
@@ -144,7 +144,7 @@ func seedEnrollmentCoreTables(
 		log.Fatalf("Failed to list processes: %v", err)
 	}
 	for _, p := range process {
-		for i := range 5 {
+		for i := range 3 {
 			studentGroup := createStudentGroup(int16(i+1), p)
 			err := studentGroupRepo.CreateStudentGroup(ctx, studentGroup)
 			if err != nil {

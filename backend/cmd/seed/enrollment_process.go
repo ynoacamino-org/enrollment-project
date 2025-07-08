@@ -185,7 +185,7 @@ func seedEnrollmentProcessTables(
 	processes := processAsync.Value
 
 	for _, student := range students {
-		numOfProcssByStudent := rand.Intn(2) + 1
+		numOfProcssByStudent := 4
 
 		for range numOfProcssByStudent {
 			process := processes[rand.Intn(len(processes))]
