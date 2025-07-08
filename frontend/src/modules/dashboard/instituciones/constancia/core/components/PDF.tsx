@@ -1,6 +1,7 @@
 import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import type { User } from '@/modules/auth/core/types/user';
+import { Button } from '@/modules/core/ui/button';
 
 // type EnrollmentStudent = {
 //   nombre: string;
@@ -83,21 +84,20 @@ export function ViewAndDownloadPDF({
   date?: number;
 }) {
   return (
-    <div>
-      <div style={{ height: '600px', border: '1px solid #ccc' }}>
-        <PDFViewer width="100%" height="100%">
-          <PDF user={user} date={date} />
-        </PDFViewer>
-      </div>
-
-      <PDFDownloadLink
-        document={<PDF user={user} date={date} />}
-        fileName="archivo.pdf"
-      >
-        {({ loading }: { loading: boolean }) =>
-          loading ? 'Generando PDF...' : 'Descargar PDF'
-        }
-      </PDFDownloadLink>
+    <div className="flex flex-col gap-4 size-full items-center">
+      <Button className="" asChild>
+        <PDFDownloadLink
+          document={<PDF user={user} date={date} />}
+          fileName="archivo.pdf"
+        >
+          {({ loading }: { loading: boolean }) =>
+            loading ? 'Generando PDF...' : 'Descargar PDF'
+          }
+        </PDFDownloadLink>
+      </Button>
+      <PDFViewer className="w-full h-full">
+        <PDF user={user} date={date} />
+      </PDFViewer>
     </div>
   );
 }

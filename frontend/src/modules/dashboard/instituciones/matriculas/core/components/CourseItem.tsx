@@ -13,20 +13,33 @@ import { isAvailableSection } from '@/modules/dashboard/instituciones/matriculas
 import { useSections } from '@/modules/dashboard/instituciones/matriculas/core/services/useSection';
 import type {
   EnrollmentCourse,
-  EnrollmentSection,
-} from '@/modules/dashboard/instituciones/matriculas/core/types/process';
+  SelectedCourse,
+} from '@/modules/dashboard/instituciones/matriculas/core/types/courses';
+import type { EnrollmentSection } from '@/modules/dashboard/instituciones/matriculas/core/types/process';
 import { CalendarRangeIcon, ScaleIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 function CourseItem({
   course,
   values,
+  handleSelection,
+  allowEnroll,
+  selectedCourses,
 }: {
   course: EnrollmentCourse;
   values: string[];
+  handleSelection: (
+    section: EnrollmentSection,
+    course: EnrollmentCourse,
+  ) => void;
+  allowEnroll: boolean;
+  selectedCourses: SelectedCourse[];
 }) {
+  const wasSelected = selectedCourses.some(
+    (c) => c.id.toString() === course.id.toString(),
+  );
   const [isSectionsLoaded, setIsSectionsLoaded] = useState(
-    values.includes(`item-${course.id}`),
+    values.includes(course.id.toString()) || wasSelected,
   );
   const [wantToSelect, setWantToSelect] = useState(false);
   const { sections, isLoading } = useSections(
@@ -35,7 +48,9 @@ function CourseItem({
   );
 
   useEffect(() => {
-    setIsSectionsLoaded((prev) => prev || values.includes(`item-${course.id}`));
+    setIsSectionsLoaded(
+      (prev) => prev || values.includes(course.id.toString()),
+    );
   }, [values]);
 
   const [selected, setSelected] = useState<EnrollmentSection | null>(null);
@@ -49,8 +64,14 @@ function CourseItem({
           isAvailableSection(section),
         );
         setSelected(inferSelected || null);
+        if (inferSelected) {
+          handleSelection(inferSelected, course);
+        }
       }
       setWantToSelect(false);
+    }
+    if (selected && !wantToSelect) {
+      handleSelection(selected, course);
     }
   }, [sections, isSectionsLoaded, wantToSelect, selected]);
 
@@ -67,12 +88,13 @@ function CourseItem({
       isSelected={isSelected}
       toggleIsSelected={toggleIsSelected}
     >
-      <AccordionItem value={`item-${course.id}`}>
+      <AccordionItem value={course.id.toString()}>
         <div className="flex items-center gap-x-2">
           <Checkbox
             className="border-muted-foreground"
-            checked={isSelected}
+            checked={isSelected || wasSelected}
             onCheckedChange={toggleIsSelected}
+            disabled={!allowEnroll}
           />
           <AccordionTrigger>
             {capitalize(course.name)}
@@ -90,7 +112,11 @@ function CourseItem({
         </div>
         <AccordionContent>
           {!isLoading && sections ? (
-            <Sections sections={sections} />
+            <Sections
+              sections={sections}
+              allowEnroll={allowEnroll}
+              selectedCourses={selectedCourses}
+            />
           ) : (
             <Skeleton className="h-20 w-full" />
           )}

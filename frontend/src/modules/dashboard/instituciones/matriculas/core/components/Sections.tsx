@@ -2,11 +2,21 @@ import { cn } from '@/modules/core/lib/utils';
 import { Badge } from '@/modules/core/ui/badge';
 import { Checkbox } from '@/modules/core/ui/checkbox';
 import { useCourseItem } from '@/modules/dashboard/instituciones/matriculas/core/components/CourseItemContext';
+import type { SelectedCourse } from '@/modules/dashboard/instituciones/matriculas/core/types/courses';
 import type { EnrollmentSection } from '@/modules/dashboard/instituciones/matriculas/core/types/process';
 import { TicketsIcon } from 'lucide-react';
 
-function SectionItem({ section }: { section: EnrollmentSection }) {
+function SectionItem({
+  section,
+  allowEnroll,
+  selectedCourses,
+}: {
+  section: EnrollmentSection;
+  allowEnroll: boolean;
+  selectedCourses: SelectedCourse[];
+}) {
   const { selected, setSelected } = useCourseItem();
+  console.log('SectionItem', selectedCourses);
   return (
     <div
       className={cn('flex border rounded-md p-2 items-center gap-x-2', {
@@ -17,8 +27,13 @@ function SectionItem({ section }: { section: EnrollmentSection }) {
     >
       <Checkbox
         className="border-muted-foreground"
-        checked={selected?.id === section.id}
-        disabled={section.taken_places >= section.total_places}
+        checked={
+          selected?.id === section.id ||
+          selectedCourses.some(
+            (course) => course.section.id === section.id.toString(),
+          )
+        }
+        disabled={section.taken_places >= section.total_places || !allowEnroll}
         onCheckedChange={() =>
           setSelected(selected?.id === section.id ? null : section)
         }
@@ -33,11 +48,24 @@ function SectionItem({ section }: { section: EnrollmentSection }) {
   );
 }
 
-function Sections({ sections }: { sections: EnrollmentSection[] }) {
+function Sections({
+  sections,
+  allowEnroll,
+  selectedCourses,
+}: {
+  sections: EnrollmentSection[];
+  allowEnroll: boolean;
+  selectedCourses: SelectedCourse[];
+}) {
   return (
-    <div className="grid gap-2 grid-cols-[repeat(auto-fit,minmax(100px,1fr))]">
+    <div className="grid gap-2 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
       {sections.map((section) => (
-        <SectionItem key={section.id} section={section} />
+        <SectionItem
+          key={section.id}
+          section={section}
+          allowEnroll={allowEnroll}
+          selectedCourses={selectedCourses}
+        />
       ))}
     </div>
   );
