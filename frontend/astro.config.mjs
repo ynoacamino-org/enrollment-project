@@ -7,6 +7,15 @@ import svgr from 'vite-plugin-svgr';
 import react from '@astrojs/react';
 
 import vercel from '@astrojs/vercel';
+import node from '@astrojs/node';
+
+import { loadEnv } from 'vite';
+
+const { DEVELOPMENT } = loadEnv(
+  process.env.NODE_ENV || 'development',
+  process.cwd(),
+  '',
+);
 
 // https://astro.build/config
 export default defineConfig({
@@ -36,5 +45,9 @@ export default defineConfig({
   },
 
   integrations: [react()],
-  adapter: vercel(),
+  adapter: DEVELOPMENT
+    ? node({
+        mode: 'standalone',
+      })
+    : vercel(),
 });

@@ -3,9 +3,9 @@ import { sleep, check } from 'k6';
 
 export const options = {
   stages: [
-    { duration: '10s', target: 1000 },
-    { duration: '20s', target: 5000 },
-    { duration: '5s', target: 500 }
+    { duration: '60s', target: 1000 },
+    { duration: '120s', target: 20000 },
+    { duration: '40s', target: 500 }
   ]
 };
 
@@ -20,7 +20,7 @@ const COOKIE = {
 };
 
 export default function () {
-  const base = 'http://localhost:8080';
+  const base = 'http://10.7.127.198:8080';
 
   http.get(`${base}/auth/me`, COOKIE);
   sleep(0.7);

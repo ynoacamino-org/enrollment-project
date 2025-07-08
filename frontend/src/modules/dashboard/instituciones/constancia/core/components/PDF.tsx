@@ -23,10 +23,8 @@ const styles = StyleSheet.create({
 });
 
 const courses = [
-  { nombre: 'Cálculo en Varias Variables', seccion: 'A', creditos: 4 },
-  { nombre: 'Estructura de Datos', seccion: 'B', creditos: 4 },
-  { nombre: 'Base de Datos', seccion: 'A', creditos: 4 },
-  { nombre: 'Inglés', seccion: 'C', creditos: 2 },
+  { nombre: 'Incidunt Maxime', seccion: 'A', creditos: 1 },
+  { nombre: 'Modi Ut', seccion: 'B', creditos: 4 },
 ];
 
 export default function PDF({

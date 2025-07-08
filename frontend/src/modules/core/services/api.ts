@@ -25,9 +25,8 @@ abstract class ApiService {
 
     try {
       const response = await fetch(url, config);
-
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         return {
           data: undefined,
           error: {
@@ -36,7 +35,19 @@ abstract class ApiService {
           },
         };
       }
-      const data = (await response.json()) as T;
+
+      let data!: T;
+      try {
+        // Only parse JSON if there is content
+        if (response.status !== 204) {
+          data = (await response.json()) as T;
+        } else {
+          data = {} as T; // Handle 204 No Content
+        }
+      } catch {
+        data = {} as T;
+      }
+
       return {
         data,
         error: undefined,
