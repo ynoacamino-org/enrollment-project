@@ -1,5 +1,4 @@
 import { Accordion } from '@/modules/core/ui/accordion';
-import type { EnrollmentCourse } from '../types/process';
 import {
   Card,
   CardAction,
@@ -13,16 +12,85 @@ import { Badge } from '@/modules/core/ui/badge';
 import { CalendarRangeIcon, ScaleIcon } from 'lucide-react';
 import { CourseItem } from '@/modules/dashboard/instituciones/matriculas/core/components/CourseItem';
 import { useState } from 'react';
+import type {
+  EnrollmentCourse,
+  SelectedCourse,
+} from '@/modules/dashboard/instituciones/matriculas/core/types/courses';
+import { actions } from 'astro:actions';
+import { toast } from 'sonner';
+import type {
+  EnrollmentedSection,
+  EnrollmentSection,
+} from '@/modules/dashboard/instituciones/matriculas/core/types/process';
 
 export default function CoursesList({
   courses,
+  enrollmentedSections,
 }: {
   courses: EnrollmentCourse[];
+  enrollmentedSections: EnrollmentedSection[];
 }) {
   const [values, setValues] = useState<string[]>([]);
-
+  const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>(
+    enrollmentedSections
+      .filter((e) => {
+        const courseFounded = courses.find(
+          (course) => course.id.toString() === e.course_id.toString(),
+        );
+        if (!courseFounded) {
+          console.error(
+            `No se encontró el curso con ID ${e.course_id} en la lista de cursos.`,
+          );
+          return false;
+        }
+        return true;
+      })
+      .map((e) => {
+        const courseFounded =
+          courses.find(
+            (course) => course.id.toString() === e.course_id.toString(),
+          ) || ({} as EnrollmentCourse);
+        const selectedCourse: SelectedCourse = {
+          ...courseFounded,
+          section: {
+            id: e.section_id.toString(),
+            section_name: e.section_name,
+            taken_places: 0,
+            total_places: 0,
+            events: [],
+          } as EnrollmentSection,
+        };
+        return selectedCourse;
+      }),
+  );
+  const handleSelection = (
+    section: EnrollmentSection,
+    course: EnrollmentCourse,
+  ) => {
+    setSelectedCourses((prev) => [
+      ...prev.filter((c) => c.id !== course.id),
+      { ...course, section },
+    ]);
+  };
+  const allowEnroll = enrollmentedSections.length <= 0;
+  const handleEnroll = async () => {
+    if (selectedCourses.length <= 0) return;
+    const sectionIds = selectedCourses.map((course) => course.section.id);
+    console.log(sectionIds);
+    const { data, error } = await actions.courses.enroll(sectionIds);
+    if (error || !data) {
+      toast.error(
+        'Error al matricularte en los cursos seleccionados. Por favor, intenta nuevamente.',
+      );
+      return;
+    }
+    if (data) {
+      toast.success('¡Matriculado exitosamente!');
+      setSelectedCourses([]);
+    }
+  };
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex gap-x-2">
           Cursos disponibles
@@ -39,7 +107,12 @@ export default function CoursesList({
           Selecciona los turnos de los cursos para ver tu horario
         </CardDescription>
         <CardAction>
-          <Button>Matricular</Button>
+          <Button
+            onClick={handleEnroll}
+            disabled={selectedCourses.length <= 0 || !allowEnroll}
+          >
+            Matricular
+          </Button>
         </CardAction>
       </CardHeader>
       <CardContent>
@@ -50,7 +123,14 @@ export default function CoursesList({
           value={values}
         >
           {courses.map((course) => (
-            <CourseItem key={course.id} course={course} values={values} />
+            <CourseItem
+              key={course.id}
+              course={course}
+              values={values}
+              allowEnroll={allowEnroll}
+              handleSelection={handleSelection}
+              selectedCourses={selectedCourses}
+            />
           ))}
         </Accordion>
       </CardContent>

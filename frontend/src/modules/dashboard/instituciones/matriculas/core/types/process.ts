@@ -1,4 +1,5 @@
 import type { EnrollmentProcessStates } from '@/modules/dashboard/instituciones/matriculas/core/lib/enrollment';
+import type { EnrollmentCourse } from '@/modules/dashboard/instituciones/matriculas/core/types/courses';
 
 export type EnrollmentProcessStatus =
   (typeof EnrollmentProcessStates)[keyof typeof EnrollmentProcessStates];
@@ -21,13 +22,6 @@ export type EnrollmentProcessWithCourses = BaseEnrollmentProcess & {
   courses: EnrollmentCourse[];
 };
 
-export type EnrollmentCourse = {
-  id: number;
-  name: string;
-  credits: number;
-  cicle_number: number;
-};
-
 export type EnrollmentEvent = {
   id: number;
   start_date: string;
@@ -45,6 +39,15 @@ export type EnrollmentSection = {
   taken_places: number;
   total_places: number;
   events: EnrollmentEvent[];
+};
+
+export type EnrollmentedSection = {
+  section_id: string;
+  section_name: string;
+  course_id: string;
+  course_name: string;
+  cycle_number: number;
+  credits: number;
 };
 
 export type EnrollmentProcess = {

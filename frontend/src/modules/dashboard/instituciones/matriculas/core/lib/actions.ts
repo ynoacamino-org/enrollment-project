@@ -14,4 +14,16 @@ export const courses = {
       return data;
     },
   }),
+  enroll: defineAction({
+    handler: async (sectionIds, ctx) => {
+      const { data, error } = await coursesService.enroll(
+        sectionIds,
+        ctx.cookies,
+      );
+      if (error) {
+        throw error;
+      }
+      return data;
+    },
+  }),
 };
