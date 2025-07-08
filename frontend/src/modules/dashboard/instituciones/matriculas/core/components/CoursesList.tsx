@@ -31,7 +31,10 @@ export default function CoursesList({
     section: EnrollmentSection,
     course: EnrollmentCourse,
   ) => {
-    setSelectedCourses((prev) => [...prev, { ...course, section }]);
+    setSelectedCourses((prev) => [
+      ...prev.filter((c) => c.id !== course.id),
+      { ...course, section },
+    ]);
   };
   const handleEnroll = async () => {
     console.log('Selected courses: ', selectedCourses);

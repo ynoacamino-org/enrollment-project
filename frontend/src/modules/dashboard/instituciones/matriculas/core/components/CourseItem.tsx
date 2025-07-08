@@ -60,6 +60,9 @@ function CourseItem({
       }
       setWantToSelect(false);
     }
+    if (selected && !wantToSelect) {
+      handleSelection(selected, course);
+    }
   }, [sections, isSectionsLoaded, wantToSelect, selected]);
 
   const toggleIsSelected = () => {

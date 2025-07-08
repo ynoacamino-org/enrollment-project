@@ -53,15 +53,19 @@ class CoursesService extends ApiService {
     }
 
     try {
-      console.log(JSON.stringify(sectionIds));
+      const sectionSafeIds = sectionIds.map((id) => ({
+        sectionId: id,
+      }));
+      console.log('sectionSafeIds: ', JSON.stringify(sectionSafeIds));
       return this.request({
-        mapping: 'enrollmented',
+        mapping: 'enrollment',
         options: {
           method: 'POST',
           headers: {
+            'Content-Type': 'application/json',
             Cookie: `session_token=${sessionToken}`,
           },
-          body: JSON.stringify(sectionIds),
+          body: JSON.stringify(sectionSafeIds),
         },
       });
     } catch (error) {
