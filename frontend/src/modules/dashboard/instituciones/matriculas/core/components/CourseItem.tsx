@@ -11,7 +11,10 @@ import { CourseItemProvider } from '@/modules/dashboard/instituciones/matriculas
 import { Sections } from '@/modules/dashboard/instituciones/matriculas/core/components/Sections';
 import { isAvailableSection } from '@/modules/dashboard/instituciones/matriculas/core/lib/sections';
 import { useSections } from '@/modules/dashboard/instituciones/matriculas/core/services/useSection';
-import type { EnrollmentCourse } from '@/modules/dashboard/instituciones/matriculas/core/types/courses';
+import type {
+  EnrollmentCourse,
+  SelectedCourse,
+} from '@/modules/dashboard/instituciones/matriculas/core/types/courses';
 import type { EnrollmentSection } from '@/modules/dashboard/instituciones/matriculas/core/types/process';
 import { CalendarRangeIcon, ScaleIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -20,6 +23,8 @@ function CourseItem({
   course,
   values,
   handleSelection,
+  allowEnroll,
+  selectedCourses,
 }: {
   course: EnrollmentCourse;
   values: string[];
@@ -27,9 +32,14 @@ function CourseItem({
     section: EnrollmentSection,
     course: EnrollmentCourse,
   ) => void;
+  allowEnroll: boolean;
+  selectedCourses: SelectedCourse[];
 }) {
+  const wasSelected = selectedCourses.some(
+    (c) => c.id.toString() === course.id.toString(),
+  );
   const [isSectionsLoaded, setIsSectionsLoaded] = useState(
-    values.includes(course.id.toString()),
+    values.includes(course.id.toString()) || wasSelected,
   );
   const [wantToSelect, setWantToSelect] = useState(false);
   const { sections, isLoading } = useSections(
@@ -82,8 +92,9 @@ function CourseItem({
         <div className="flex items-center gap-x-2">
           <Checkbox
             className="border-muted-foreground"
-            checked={isSelected}
+            checked={isSelected || wasSelected}
             onCheckedChange={toggleIsSelected}
+            disabled={!allowEnroll}
           />
           <AccordionTrigger>
             {capitalize(course.name)}
@@ -101,7 +112,11 @@ function CourseItem({
         </div>
         <AccordionContent>
           {!isLoading && sections ? (
-            <Sections sections={sections} />
+            <Sections
+              sections={sections}
+              allowEnroll={allowEnroll}
+              selectedCourses={selectedCourses}
+            />
           ) : (
             <Skeleton className="h-20 w-full" />
           )}

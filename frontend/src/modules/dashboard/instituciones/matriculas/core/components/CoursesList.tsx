@@ -18,15 +18,51 @@ import type {
 } from '@/modules/dashboard/instituciones/matriculas/core/types/courses';
 import { actions } from 'astro:actions';
 import { toast } from 'sonner';
-import type { EnrollmentSection } from '@/modules/dashboard/instituciones/matriculas/core/types/process';
+import type {
+  EnrollmentedSection,
+  EnrollmentSection,
+} from '@/modules/dashboard/instituciones/matriculas/core/types/process';
 
 export default function CoursesList({
   courses,
+  enrollmentedSections,
 }: {
   courses: EnrollmentCourse[];
+  enrollmentedSections: EnrollmentedSection[];
 }) {
   const [values, setValues] = useState<string[]>([]);
-  const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([]);
+  const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>(
+    enrollmentedSections
+      .filter((e) => {
+        const courseFounded = courses.find(
+          (course) => course.id.toString() === e.course_id.toString(),
+        );
+        if (!courseFounded) {
+          console.error(
+            `No se encontró el curso con ID ${e.course_id} en la lista de cursos.`,
+          );
+          return false;
+        }
+        return true;
+      })
+      .map((e) => {
+        const courseFounded =
+          courses.find(
+            (course) => course.id.toString() === e.course_id.toString(),
+          ) || ({} as EnrollmentCourse);
+        const selectedCourse: SelectedCourse = {
+          ...courseFounded,
+          section: {
+            id: e.section_id.toString(),
+            section_name: e.section_name,
+            taken_places: 0,
+            total_places: 0,
+            events: [],
+          } as EnrollmentSection,
+        };
+        return selectedCourse;
+      }),
+  );
   const handleSelection = (
     section: EnrollmentSection,
     course: EnrollmentCourse,
@@ -36,8 +72,8 @@ export default function CoursesList({
       { ...course, section },
     ]);
   };
+  const allowEnroll = enrollmentedSections.length <= 0;
   const handleEnroll = async () => {
-    console.log('Selected courses: ', selectedCourses);
     if (selectedCourses.length <= 0) return;
     const sectionIds = selectedCourses.map((course) => course.section.id);
     console.log(sectionIds);
@@ -71,7 +107,10 @@ export default function CoursesList({
           Selecciona los turnos de los cursos para ver tu horario
         </CardDescription>
         <CardAction>
-          <Button onClick={handleEnroll} disabled={selectedCourses.length <= 0}>
+          <Button
+            onClick={handleEnroll}
+            disabled={selectedCourses.length <= 0 || !allowEnroll}
+          >
             Matricular
           </Button>
         </CardAction>
@@ -88,7 +127,9 @@ export default function CoursesList({
               key={course.id}
               course={course}
               values={values}
+              allowEnroll={allowEnroll}
               handleSelection={handleSelection}
+              selectedCourses={selectedCourses}
             />
           ))}
         </Accordion>

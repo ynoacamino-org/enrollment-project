@@ -41,6 +41,15 @@ export type EnrollmentSection = {
   events: EnrollmentEvent[];
 };
 
+export type EnrollmentedSection = {
+  section_id: string;
+  section_name: string;
+  course_id: string;
+  course_name: string;
+  cycle_number: number;
+  credits: number;
+};
+
 export type EnrollmentProcess = {
   id: string;
   name: string;
