@@ -22,40 +22,27 @@ const COOKIE = {
 export default function () {
   const base = 'http://localhost:8080';
 
-  // 1. GET /auth/me
   http.get(`${base}/auth/me`, COOKIE);
-  sleep(0.5);
+  sleep(0.7);
 
-  // 2. GET /courses/enrollmented
   http.get(`${base}/courses/enrollmented`, COOKIE);
-  sleep(0.5);
+  sleep(0.7);
 
-  // 3. GET /institutions
   const institutionsRes = http.get(`${base}/institutions`, COOKIE);
+  sleep(0.7);
 
-  const institutions = institutionsRes.json();
-  sleep(0.5);
-  if (!institutions || institutions.length === 0) return;
-
-  const institutionId = institutions[0].id;
+  const institutionId = 1;
 
   const instDetailRes = http.get(`${base}/institutions/${institutionId}`, COOKIE);
-  const institutionDetail = instDetailRes.json();
-  sleep(0.5);
-  if (!institutionDetail.processes || institutionDetail.processes.length === 0) return;
+  sleep(0.7);
 
-  const processId = institutionDetail.processes[0].id;
+  const processId = 29;
 
-  // 5. GET /processes/{processId}
   const processRes = http.get(`${base}/processes/${processId}`, COOKIE);
-  const processDetail = processRes.json();
-  sleep(0.5);
-  if (!processDetail.courses || processDetail.courses.length === 0) return;
+  sleep(0.7);
 
-  const courseId = processDetail.courses[0].id;
+  const courseId = 53;
 
-  // 6. GET /courses/{courseId}/sections
   const sectionsRes = http.get(`${base}/courses/${courseId}/sections`, COOKIE);
-  const sections = sectionsRes.json();
-  sleep(0.5);
+  sleep(0.7);
 }

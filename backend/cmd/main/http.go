@@ -62,10 +62,6 @@ func handleHTTPServer(
 	oauthsvr.Mount(mux, oauthServer)
 
 	var handler http.Handler = mux
-	if dbg {
-		handler = debug.HTTP()(handler)
-	}
-	handler = log.HTTP(ctx)(handler)
 	handler = utils.SessionTokenMiddleware(handler)
 
 	srv := &http.Server{Addr: ":" + port, Handler: handler, ReadHeaderTimeout: time.Second * 60}
