@@ -5,6 +5,7 @@ import EnrollmentDashboardLayout from '@/modules/dashboard/instituciones/matricu
 import { processService } from '@/modules/dashboard/instituciones/matriculas/core/services/process';
 import { LANDING_ROUTE } from '@/modules/landing/core/lib/routes';
 import {ViewAndDownloadPDF} from '@/modules/dashboard/instituciones/constancia/core/components/PDF';
+import { coursesService } from '@/modules/dashboard/instituciones/matriculas/core/services/courses';
 
 const { data: user, error } = await authService.getUser(Astro.cookies);
 
